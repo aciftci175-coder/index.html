@@ -129,7 +129,7 @@ td.n,th.n{text-align:right}
 .cab .row div{min-width:0}
 .cab .row strong{display:block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.04em;font-size:16px}
 .cab .row small{color:var(--muted);overflow-wrap:anywhere}
-.col{max-width:620px;margin:0 auto;display:grid;gap:16px}
+.col{width:100%;max-width:620px;margin:0 auto;display:grid;gap:16px}
 .sline{font-size:16px;font-weight:600}
 .btn.link{justify-self:center;background:none;border:0;color:var(--muted);font-size:13px}
 .offer{font:inherit;color:var(--chalk);text-align:left;cursor:pointer;width:100%}
@@ -141,6 +141,16 @@ td.n,th.n{text-align:right}
 .sh{font-size:24px;margin-top:8px}
 .endhero h1{font-size:clamp(40px,9vw,80px)}
 .cab{grid-template-columns:1fr}
+.season.big{border-color:var(--gold);background:linear-gradient(180deg,var(--goldbg),var(--surface) 75%)}
+.moment{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);text-transform:uppercase;color:var(--gold);line-height:1;margin-bottom:10px;animation:pop .5s ease-out both}
+@keyframes pop{from{transform:scale(.9)}to{transform:none}}
+#app{display:grid;gap:16px}
+.hof{display:grid;gap:8px}
+.hrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.hrow:last-child{border-bottom:0}
+.hrow strong{display:block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.04em}
+.hrow small{color:var(--muted)}
+.hn{font-family:var(--display);font-weight:900;font-size:24px;color:var(--amber);min-width:20px}
 .cab .row.none b{color:var(--line)}
 .runs{display:block;margin-top:4px}
 .crest.logo{object-fit:contain}
@@ -368,6 +378,8 @@ function makeOffers(){
 function addT(cat,name,year,club){P.trophies.push({cat,name,year,club})}
 
 function playSeason(){
+  const tBefore=P.trophies.filter(x=>x.cat!=='bdo'&&x.cat!=='boot').length;
+  const prevT=P.seasons.reduce((a,x)=>(a.g+=x.goals,a.a+=x.apps,a.c+=x.caps,a),{g:0,a:0,c:0});
   const i=P.seasons.length,Y=2026+i,endY=Y+1,age=P.age;
   const t=teamOf(P.team.n,P.team.lg),l=LG[t.lg],pos=POS[P.pos];
   const avgP=avgPow(l),rel=P.ovr-t.p,share=sig((rel+3)/2.5);
@@ -441,8 +453,13 @@ function playSeason(){
   // gelişim
   const before=P.ovr;
   P.ovr=applyG(P.ovr,growth(age,rel,t.pot,avg,false),P.pot);
+  const miles=[];
+  [50,100,200,300,400,500,600,700,800,900].forEach(m=>{if(prevT.g<m&&prevT.g+goals>=m)miles.push(m+'. kariyer golü')});
+  [100,250,500,750].forEach(m=>{if(prevT.a<m&&prevT.a+apps>=m)miles.push(m+'. maç')});
+  if(prevT.c===0&&caps>0)miles.push('Milli takımda ilk maç');
+  if(tBefore===0&&P.trophies.some(x=>x.cat!=='bdo'&&x.cat!=='boot'))miles.push('İlk kupan');
   P.seasons.push({label:Y+'/'+String(endY).slice(2),endY,age,club:t.n,lg:l.id,lgName:l.n,before,after:P.ovr,apps,goals,assists,cs,avg,rank,size:l.teams.length,
-    cup:{n:l.cup,txt:cup.txt,won:cup.won},euro,cwc,caps,ngoals,tourn,bdo,boot,injured,trophies,value:mv(P.ovr,age+1)});
+    cup:{n:l.cup,txt:cup.txt,won:cup.won},euro,cwc,caps,ngoals,tourn,bdo,boot,injured,trophies,miles,value:mv(P.ovr,age+1)});
   P.age++;
   if(P.age>38){P.done=true;OFFERS=null}
   else if(P.seasons.length%2===0)OFFERS=makeOffers();
@@ -450,6 +467,11 @@ function playSeason(){
 }
 
 /* ================= ekranlar ================= */
+function fallbackCopy(t){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+function hofHtml(){let h=[];try{h=JSON.parse(localStorage.getItem('futbol-kariyer-yolu.hof')||'[]')}catch(e){}
+  if(!h.length)return '';
+  return `<section class="col card" style="display:grid;gap:10px"><h2 style="font-size:24px">En iyi kariyerlerin</h2>
+  <div class="hof">${h.slice(0,5).map((x,i)=>`<div class="hrow"><span class="hn">${i+1}</span>${x.club?crest(x.club,26):''}<div style="min-width:0"><strong>${esc(x.name)}</strong><small>${esc(x.legacy)} · ${x.g} gol · ${x.bdo} Ballon d'Or · ${x.wc} Dünya Kupası · ${x.tr} kupa</small></div></div>`).join('')}</div></section>`}
 function renderStart(){
   const saved=load();
   const nats=NATIONS.map(n=>`<option${n.n==='Türkiye'?' selected':''}>${esc(n.n)}</option>`).join('');
@@ -468,7 +490,7 @@ function renderStart(){
       <button class="btn primary" id="go">Başla</button>
       ${saved&&!saved.P.done?`<button class="btn" id="cont">Devam et (${esc(saved.P.name)}, ${saved.P.age})</button>`:''}
     </div>
-  </section>`;
+  </section>${hofHtml()}`;
   $('#go').onclick=()=>{
     P=newCareer(($('#pname').value||'').trim()||'İsimsiz Yıldız',$('#pnat').value,$('#ppos').value);
     OFFERS=startOffers($('#plg').value);renderGame();
@@ -485,6 +507,16 @@ function totals(){
   return t;
 }
 
+let LASTN=-1;
+function bigMoment(s){
+  if(s.bdo===1)return "Ballon d'Or senin!";
+  if(s.tourn&&s.tourn.won)return s.tourn.wc?'Dünya şampiyonu!':s.tourn.n.replace(/ \d+$/,'')+' şampiyonu!';
+  if(s.euro&&s.euro.won&&s.euro.k==='top')return s.euro.n+' şampiyonu!';
+  if(s.cwc&&s.cwc.won)return 'Dünya kulüpler şampiyonu!';
+  if(s.rank===1&&s.cup.won)return 'Çifte kupa!';
+  if(s.rank===1)return s.lgName+' şampiyonu!';
+  return null;
+}
 function renderGame(){
   if(P.done)return renderEnd();
   const t=P.team?teamOf(P.team.n,P.team.lg):null,l=t?LG[t.lg]:null,tt=totals();
@@ -508,18 +540,19 @@ function renderGame(){
         <button class="btn" id="fast">Transfere kadar oyna</button>
       </div>`:''}
     </div>
-    ${s?`<div class="card season">
+    ${P.seasons.slice(LASTN<0?Math.max(0,n-1):Math.min(LASTN,n-1)).reverse().map(s=>{const h=bigMoment(s);return `<div class="card season${h?' big':''}">
+      ${h?`<div class="moment">${esc(h)}</div>`:''}
       <div class="shead"><h2>${s.label}</h2><span class="eyebrow cl">${crest(s.club,20)}${esc(s.club)}</span></div>
-      <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}</div>
-      ${s.trophies.length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}
-    </div>`:''}
+      <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}${s.injured?' · sakatlık':''}</div>
+      ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${esc(x)}</span>`).join('')}</div>`:''}
+    </div>`}).join('')}
     <button class="btn link" id="reset">Yeni kariyer</button>
   </section>`;
-  if($('#play'))$('#play').onclick=()=>{playSeason();renderGame()};
-  if($('#fast'))$('#fast').onclick=()=>{do{playSeason()}while(!OFFERS&&!P.done);renderGame()};
+  if($('#play'))$('#play').onclick=()=>{LASTN=P.seasons.length;playSeason();renderGame()};
+  if($('#fast'))$('#fast').onclick=()=>{LASTN=P.seasons.length;do{playSeason()}while(!OFFERS&&!P.done);renderGame()};
   $('#reset').onclick=e=>{
     const b=e.currentTarget;
-    if(b.dataset.c){clearSave();P=null;OFFERS=null;renderStart();return}
+    if(b.dataset.c){clearSave();P=null;OFFERS=null;LASTN=-1;renderStart();return}
     b.dataset.c=1;b.textContent='Silmek için tekrar bas';
   };
   if(OFFERS)renderOffers();
@@ -559,6 +592,7 @@ function renderEnd(){
   const best=P.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
   const ucl=T.filter(x=>x.name==='UEFA Şampiyonlar Ligi').length,wc=T.filter(x=>x.cat==='wc').length;
   const pts=bdo.length*10+wc*9+ucl*4+T.filter(x=>x.cat==='natc').length*4+T.filter(x=>x.cat==='league').length*1.5+tt.goals/40;
+  const HOF_KEY='futbol-kariyer-yolu.hof';
   const legacy=pts>=70?'Tüm zamanların en iyisi':pts>=40?'Futbol efsanesi':pts>=20?'Dünya yıldızı':pts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
   const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row"><b>${g[k].length}</b><div><strong>${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
   const clubs=[...new Set(P.seasons.map(s=>s.club))];
@@ -590,9 +624,13 @@ function renderEnd(){
     </div>
     <h2 class="sh">Kupalar (${team.length})</h2>
     ${team.length?`<div class="cab">${rows(group(team))}</div>`:'<p class="note">Kupa kazanılmadı.</p>'}
-    <button class="btn primary" id="again">Yeni kariyer</button>
+    <div class="btns"><button class="btn primary" id="again">Yeni kariyer</button><button class="btn" id="copy">Kariyeri kopyala</button></div>
   </section>`;
-  $('#again').onclick=()=>{clearSave();P=null;OFFERS=null;renderStart();window.scrollTo(0,0)};
+  if(!P.hof){P.hof=1;save();try{const h=JSON.parse(localStorage.getItem(HOF_KEY)||'[]');h.push({name:P.name,nat:P.nat,pos:P.pos,legacy,pts:Math.round(pts),g:tt.goals,a:tt.assists,bdo:tt.bdo,wc,tr:tt.trophies+wc,club:[...new Set(P.seasons.map(s=>s.club))].sort((a,b)=>P.seasons.filter(s=>s.club===b).length-P.seasons.filter(s=>s.club===a).length)[0]});h.sort((a,b)=>b.pts-a.pts);localStorage.setItem(HOF_KEY,JSON.stringify(h.slice(0,10)))}catch(e){}}
+  $('#again').onclick=()=>{clearSave();P=null;OFFERS=null;LASTN=-1;renderStart();window.scrollTo(0,0)};
+  $('#copy').onclick=e=>{const b=e.currentTarget;const txt=`${P.name} (${P.nat}, ${POS[P.pos].n}) · ${legacy}\n${tt.apps} maç, ${tt.goals} gol, ${tt.assists} asist\nBallon d'Or: ${tt.bdo} · Dünya Kupası: ${wc}\nKupalar: ${team.length?Object.entries(group(team)).map(([k,v])=>v.length+'× '+k).join(', '):'yok'}\nKulüpler: ${[...new Set(P.seasons.map(s=>s.club))].join(' → ')}`;
+    const done=()=>{b.textContent='Kopyalandı'};
+    try{navigator.clipboard.writeText(txt).then(done,()=>{fallbackCopy(txt);done()})}catch(err){fallbackCopy(txt);done()}};
   window.scrollTo(0,0);
 }
 

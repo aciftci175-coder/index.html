@@ -91,8 +91,8 @@ td.n,th.n{text-align:right}
   padding:calc(env(safe-area-inset-top,0px) + 24px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(16px,env(safe-area-inset-left,0px))}
 .win{max-width:1000px;margin:0 auto;display:grid;gap:16px}
 .win h2{font-size:clamp(34px,6vw,56px);font-weight:900}
-.offers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-@media(max-width:720px){.offers{grid-template-columns:1fr}}
+.offers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:520px){.offers{grid-template-columns:1fr}}
 .offer{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;align-content:start}
 .offer:hover{border-color:var(--amber)}
 .tag{justify-self:start;font-family:var(--cond);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:var(--amber);color:var(--ink)}
@@ -128,13 +128,25 @@ td.n,th.n{text-align:right}
 .cab .row div{min-width:0}
 .cab .row strong{display:block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.04em;font-size:16px}
 .cab .row small{color:var(--muted);overflow-wrap:anywhere}
+.col{max-width:620px;margin:0 auto;display:grid;gap:16px}
+.sline{font-size:16px;font-weight:600}
+.btn.link{justify-self:center;background:none;border:0;color:var(--muted);font-size:13px}
+.offer{font:inherit;color:var(--chalk);text-align:left;cursor:pointer;width:100%}
+.offer:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.oname{font-family:var(--display);font-weight:900;font-size:30px;text-transform:uppercase;line-height:1;overflow-wrap:anywhere}
+.ofee{font-family:var(--display);font-weight:800;font-size:34px;color:var(--amber);font-variant-numeric:tabular-nums}
+.ofee small{display:block;font-family:var(--cond);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.win h2{font-size:clamp(32px,6vw,48px)}
+.sh{font-size:24px;margin-top:8px}
+.endhero h1{font-size:clamp(40px,9vw,80px)}
+.cab{grid-template-columns:1fr}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
 <div class="wrap">
   <header class="top">
     <div class="brand">Futbol <span>Kariyer</span> Yolu</div>
-    <div class="eyebrow">17 yaşından 38 yaşına · 55 lig · 2 yılda bir transfer</div>
+    <div class="eyebrow">17 → 38 yaş</div>
   </header>
   <main id="app"></main>
 </div>
@@ -394,72 +406,30 @@ function renderStart(){
   const groups={};LEAGUES.forEach(l=>{(groups[l.c]=groups[l.c]||[]).push(l)});
   const lgs=Object.keys(groups).map(c=>`<optgroup label="${esc(c)}">${groups[c].map(l=>`<option value="${l.id}"${l.id==='TUR'?' selected':''}>${esc(l.n)}</option>`).join('')}</optgroup>`).join('');
   const poss=Object.keys(POS).map(k=>`<option value="${k}">${POS[k].n}</option>`).join('');
-  $('#app').innerHTML=`
-  <section class="hero">
-    <div>
-      <div class="eyebrow">Sezon 2026/27 · Altyapıdan ilk imza</div>
-      <h1>17 yaşındasın.<br><em>Yolu sen seç.</em></h1>
-      <p>Dünyanın 55 liginden birinde başla. Her iki sezonda bir iki kulüpten teklif gelir: takımın gücünü, oyuncu yetiştirme potansiyelini ve senin transfer bedelini görüp karar verirsin. 38 yaşında kramponları astığında Ballon d'Or, Dünya Kupası, kıta kupaları, lig ve kupa şampiyonlukların tek ekranda dökülür.</p>
-    </div>
-    <ul class="rules card">
-      <li><b>22</b><span>sezon oynarsın: 2026/27'den 2047/48'e</span></li>
-      <li><b>11</b><span>transfer dönemi, her birinde 2 teklif (istersen kalırsın)</span></li>
-      <li><b>5</b><span>Dünya Kupası: 2030, 2034, 2038, 2042, 2046</span></li>
-      <li><b>1</b><span>tık ile sezon biter; transfer dönemine kadar hızlı oynatabilirsin</span></li>
-    </ul>
-  </section>
-  <section class="card" style="display:grid;gap:16px">
-    <h2 style="font-size:28px">Oyuncunu oluştur</h2>
+  $('#app').innerHTML=`<section class="col card" style="display:grid;gap:16px">
+    <h2 style="font-size:30px">Yeni kariyer</h2>
     <form id="f" class="form">
       <label>Ad soyad<input id="pname" value="Kerem Aydın" maxlength="28" autocomplete="off"></label>
-      <label>Uyruk (milli takım)<select id="pnat">${nats}</select></label>
+      <label>Uyruk<select id="pnat">${nats}</select></label>
       <label>Mevki<select id="ppos">${poss}</select></label>
       <label>Başlangıç ligi<select id="plg">${lgs}</select></label>
     </form>
     <div class="btns">
-      <button class="btn primary" id="go">Kulüp tekliflerini gör</button>
-      ${saved&&!saved.P.done?`<button class="btn" id="cont">Kayıtlı kariyere devam et (${esc(saved.P.name)}, ${saved.P.age} yaş)</button>`:''}
+      <button class="btn primary" id="go">Başla</button>
+      ${saved&&!saved.P.done?`<button class="btn" id="cont">Devam et (${esc(saved.P.name)}, ${saved.P.age})</button>`:''}
     </div>
   </section>`;
   $('#go').onclick=()=>{
-    const name=($('#pname').value||'').trim()||'İsimsiz Yıldız';
-    P=newCareer(name,$('#pnat').value,$('#ppos').value);
-    OFFERS=startOffers($('#plg').value);
-    renderGame();
+    P=newCareer(($('#pname').value||'').trim()||'İsimsiz Yıldız',$('#pnat').value,$('#ppos').value);
+    OFFERS=startOffers($('#plg').value);renderGame();
   };
   $('#f').onsubmit=e=>{e.preventDefault();$('#go').click()};
   if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame()};
 }
 
-function seasonCard(s,first){
-  const st=(won,txt)=>won?`<span class="won">ŞAMPİYON</span>`:`<span class="lost">${esc(txt)}</span>`;
-  const d=Math.round(s.after)-Math.round(s.before);
-  const pos=POS[P.pos];
-  return `<article class="card season">
-    <div class="shead"><h2>${s.label}</h2><span class="eyebrow">${esc(s.club)} · ${s.age} yaş${s.injured?' · sakatlık yaşadın':''}</span></div>
-    <div class="tiles">
-      <div class="tile"><b>${s.apps}</b><span>Maç</span></div>
-      <div class="tile"><b>${pos.att||P.pos==='MO'?s.goals:s.cs}</b><span>${pos.att||P.pos==='MO'?'Gol':'Gol yemeden'}</span></div>
-      <div class="tile"><b>${pos.att||P.pos==='MO'?s.assists:s.goals}</b><span>${pos.att||P.pos==='MO'?'Asist':'Gol'}</span></div>
-      <div class="tile"><b>${s.avg.toFixed(1).replace('.',',')}</b><span>Ort. puan</span></div>
-    </div>
-    <div class="lines">
-      <div class="line"><span>${esc(s.lgName)}</span><span>${s.rank===1?'<span class="won">ŞAMPİYON</span>':s.rank+'. sıra'}</span></div>
-      <div class="line"><span>${esc(s.cup.n)}</span>${st(s.cup.won,s.cup.txt)}</div>
-      ${s.euro?`<div class="line"><span>${esc(s.euro.n)}</span>${st(s.euro.won,s.euro.txt)}</div>`:''}
-      ${s.cwc?`<div class="line"><span>${esc(s.cwc.n)}</span>${st(s.cwc.won,s.cwc.txt)}</div>`:''}
-      <div class="line"><span>Milli takım (${esc(P.nat)})</span><span>${s.caps?s.caps+' maç · '+s.ngoals+' gol':'<span class="lost">Çağrılmadın</span>'}</span></div>
-      ${s.tourn?`<div class="line"><span>${esc(s.tourn.n)}</span>${st(s.tourn.won,s.tourn.txt)}</div>`:''}
-      <div class="line"><span>Ballon d'Or</span><span>${s.bdo===1?'<span class="won">KAZANDIN</span>':s.bdo?s.bdo+'. sıra':'<span class="lost">Aday değil</span>'}</span></div>
-      <div class="line"><span>Güç değişimi</span><span class="delta ${d>0?'up':d<0?'down':''}">${Math.round(s.before)} → ${Math.round(s.after)} (${d>0?'+':''}${d})</span></div>
-    </div>
-    ${s.trophies.length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}
-  </article>`;
-}
-
 function totals(){
-  const t={apps:0,goals:0,assists:0,caps:0,ngoals:0};
-  P.seasons.forEach(s=>{t.apps+=s.apps;t.goals+=s.goals;t.assists+=s.assists;t.caps+=s.caps;t.ngoals+=s.ngoals});
+  const t={apps:0,goals:0,assists:0};
+  P.seasons.forEach(s=>{t.apps+=s.apps;t.goals+=s.goals;t.assists+=s.assists});
   t.trophies=P.trophies.filter(x=>x.cat!=='bdo'&&x.cat!=='boot').length;
   t.bdo=P.trophies.filter(x=>x.cat==='bdo').length;
   return t;
@@ -468,20 +438,15 @@ function totals(){
 function renderGame(){
   if(P.done)return renderEnd();
   const t=P.team?teamOf(P.team.n,P.team.lg):null,l=t?LG[t.lg]:null,tt=totals();
-  const n=P.seasons.length,Y=2026+n;
-  const potStars=P.pot>=91?5:P.pot>=87?4:3;
-  const left=`<aside class="side">
+  const n=P.seasons.length,Y=2026+n,s=P.seasons[n-1];
+  const def=!(POS[P.pos].att||P.pos==='MO');
+  $('#app').innerHTML=`<section class="col">
     <div class="pcard">
       <div class="prow">
-        <div class="ovr">${Math.round(P.ovr)}<small>GÜÇ</small></div>
-        <div style="min-width:0"><div class="pname">${esc(P.name)}</div><div class="meta">${esc(POS[P.pos].n)} · ${P.age} yaş · ${esc(P.nat)}</div></div>
+        <div class="ovr">${Math.round(P.ovr)}</div>
+        <div style="min-width:0"><div class="pname">${esc(P.name)}</div>
+          <div class="meta">${P.age} yaş · ${esc(POS[P.pos].n)}${t?' · '+esc(t.n):''}</div></div>
       </div>
-      ${t?`<div><div class="club">${esc(t.n)}</div><div class="meta">${esc(l.n)} · ${esc(l.c)} · Takım gücü ${t.p}</div></div>`:'<div class="meta">Henüz kulübün yok. İlk imzanı at.</div>'}
-      <dl class="kv">
-        <dt>Piyasa değeri</dt><dd>${eur(mv(P.ovr,P.age))}</dd>
-        <dt>Scout potansiyel raporu</dt><dd>${stars(potStars)}</dd>
-        ${t?`<dt>Rolün</dt><dd>${roleOf(P.ovr-t.p)}</dd><dt>Sıradaki transfer dönemi</dt><dd>${2-n%2} sezon sonra</dd>`:''}
-      </dl>
       <div class="tiles">
         <div class="tile"><b>${tt.apps}</b><span>Maç</span></div>
         <div class="tile"><b>${tt.goals}</b><span>Gol</span></div>
@@ -490,154 +455,86 @@ function renderGame(){
       </div>
       ${t?`<div class="btns">
         <button class="btn primary" id="play">${Y}/${String(Y+1).slice(2)} sezonunu oyna</button>
-        <button class="btn" id="fast">${n%2===0?'2 sezonu':'Kalan sezonu'} hızlı oyna</button>
+        <button class="btn" id="fast">Transfere kadar oyna</button>
       </div>`:''}
     </div>
-    <button class="btn" id="reset" style="justify-self:start;font-size:13px;padding:8px 12px">Yeni kariyer</button>
-  </aside>`;
-  const last=P.seasons.slice().reverse();
-  const hist=P.seasons.length>1?`<div class="tblw"><table>
-    <thead><tr><th>Sezon</th><th>Kulüp</th><th class="n">Yaş</th><th class="n">Güç</th><th class="n">Maç</th><th class="n">Gol</th><th class="n">Asist</th><th class="n">Puan</th><th>Kupalar</th></tr></thead>
-    <tbody>${last.slice(1).map(s=>`<tr><td>${s.label}</td><td>${esc(s.club)}</td><td class="n">${s.age}</td><td class="n">${Math.round(s.after)}</td><td class="n">${s.apps}</td><td class="n">${s.goals}</td><td class="n">${s.assists}</td><td class="n">${s.avg.toFixed(2)}</td><td>${s.trophies.length?esc(s.trophies.join(', ')):'—'}</td></tr>`).join('')}</tbody></table></div>`:'';
-  const right=`<section class="feed">
-    ${last.length?seasonCard(last[0],1):`<div class="card"><div class="eyebrow">Hazırlık</div><h2 style="font-size:30px;margin-top:6px">İlk kulübünü seç</h2><p class="note">İki kulüp seni altyapıdan A takıma almak istiyor. Büyük kulüpte daha az forma ama daha iyi gelişim ortamı var; küçük kulüpte hemen oynarsın.</p></div>`}
-    ${hist?`<h3 class="eyebrow" style="margin-top:6px">Önceki sezonlar</h3>${hist}`:''}
+    ${s?`<div class="card season">
+      <div class="shead"><h2>${s.label}</h2><span class="eyebrow">${esc(s.club)}</span></div>
+      <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}</div>
+      ${s.trophies.length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}
+    </div>`:''}
+    <button class="btn link" id="reset">Yeni kariyer</button>
   </section>`;
-  $('#app').innerHTML=`<div class="grid">${left}${right}</div>`;
   if($('#play'))$('#play').onclick=()=>{playSeason();renderGame()};
   if($('#fast'))$('#fast').onclick=()=>{do{playSeason()}while(!OFFERS&&!P.done);renderGame()};
   $('#reset').onclick=e=>{
     const b=e.currentTarget;
     if(b.dataset.c){clearSave();P=null;OFFERS=null;renderStart();return}
-    b.dataset.c=1;b.textContent='Emin misin? Kariyer silinecek — tekrar bas';
+    b.dataset.c=1;b.textContent='Silmek için tekrar bas';
   };
   if(OFFERS)renderOffers();
 }
 
-function offerCard(o,idx){
-  const t=teamOf(o.n,o.lg),l=LG[o.lg];
-  const ch=o.proj/Math.max(o.fee,.01)-1;
-  return `<article class="offer">
-    <span class="tag${idx?' alt':''}">${esc(o.tag)}</span>
-    <div><h3>${esc(o.n)}</h3><div class="meta">${esc(l.n)} · ${esc(l.c)}</div></div>
-    <div class="fee">
-      <div><span>${o.start?'Başlangıç değerin':'Transfer bedelin'}</span><b>${eur(o.fee)}</b></div>
-      <div><span>2 yıl sonra tahmini</span><b>${eur(o.proj)}</b><span class="${ch>=0?'up':'down'}">${ch>=0?'+':''}${Math.round(ch*100)}% · güç ${Math.round(o.o2)}</span></div>
-    </div>
-    <dl class="kv">
-      <dt>Takım gücü</dt><dd>${t.p}</dd>
-      <dd style="grid-column:1/-1;margin-top:-4px"><div class="bar"><i style="width:${clamp((t.p-55)/37*100,4,100)}%"></i></div></dd>
-      <dt>Oyuncu yetiştirme / satma potansiyeli</dt><dd>${stars(t.pot)}</dd>
-      <dt></dt><dd class="note">${POT_TXT[t.pot]}</dd>
-      <dt>Beklenen rolün</dt><dd>${o.role}</dd>
-      <dt>Kıta kupası</dt><dd>${o.comp?esc(o.comp):'—'}</dd>
-      <dt>Lig katsayısı</dt><dd>${Math.round(l.coef*100)}/100</dd>
-    </dl>
-    <button class="btn primary" data-pick="${idx}">${o.start?'İmzala':'Teklifi kabul et'}</button>
-  </article>`;
-}
-
 function renderOffers(){
   const first=!P.team;
-  const Y=2026+P.seasons.length;
   const ov=document.createElement('div');
   ov.className='overlay';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
-  ov.innerHTML=`<div class="win">
-    <div><div class="eyebrow">${first?'İlk profesyonel sözleşme':'Transfer dönemi'} · Yaz ${Y} · ${P.age} yaş · güç ${Math.round(P.ovr)}</div>
-    <h2 style="margin-top:6px">${first?'İki kulüp seni istiyor':'Masada iki teklif var'}</h2>
-    <p class="note" style="margin:8px 0 0">${first?'':'Şu anki piyasa değerin '+eur(mv(P.ovr,P.age))+'. '}Tahmini değer, kulübün oyuncu yetiştirme ve satma potansiyeline göre hesaplanır: potansiyeli yüksek kulüpte gelişimin hızlanır, değerin daha çok artar.</p></div>
-    <div class="offers">${OFFERS.map(offerCard).join('')}</div>
-    ${first?'':`<button class="btn" id="stay" style="justify-self:start">${esc(P.team.n)} kulübünde kal</button>`}
+  ov.innerHTML=`<div class="win col">
+    <h2>${first?'İlk kulübünü seç':'Transfer dönemi'}</h2>
+    <div class="offers">${OFFERS.map((o,i)=>`<button class="offer" data-pick="${i}">
+      <span class="oname">${esc(o.n)}</span>
+      <span class="meta">${esc(LG[o.lg].n)}</span>
+      <span class="ofee"><small>Transfer bedeli</small>${eur(o.fee)}</span>
+    </button>`).join('')}</div>
+    ${first?'':`<button class="btn" id="stay">${esc(P.team.n)} kulübünde kal</button>`}
   </div>`;
   document.body.appendChild(ov);
+  const Y=2026+P.seasons.length;
   ov.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
     const o=OFFERS[+b.dataset.pick];
     P.moves.push({y:Y,from:P.team?P.team.n:null,to:o.n,fee:o.fee,start:o.start});
     P.team={n:o.n,lg:o.lg};OFFERS=null;save();ov.remove();renderGame();window.scrollTo(0,0);
   });
   if($('#stay'))$('#stay').onclick=()=>{OFFERS=null;save();ov.remove();renderGame()};
-  const btn=ov.querySelector('[data-pick]');if(btn)btn.focus({preventScroll:true});
+  ov.querySelector('[data-pick]').focus({preventScroll:true});
 }
 
 /* ================= kariyer sonu ================= */
 function renderEnd(){
   const tt=totals(),T=P.trophies;
-  const by=cat=>T.filter(x=>x.cat===cat);
-  const group=list=>{const g={};list.forEach(x=>{(g[x.name]=g[x.name]||[]).push(x)});return g};
-  const yrs=list=>list.map(x=>x.year).join(', ');
-  // kulüp dönemleri
-  const stints=[];
-  P.seasons.forEach(s=>{let c=stints[stints.length-1];if(!c||c.club!==s.club){c={club:s.club,lg:s.lg,from:s.endY-1,to:s.endY,seasons:0,apps:0,goals:0,assists:0,list:[]};stints.push(c)}
-    c.to=s.endY;c.seasons++;c.apps+=s.apps;c.goals+=s.goals;c.assists+=s.assists;c.list.push(s)});
-  stints.forEach(c=>{const ys=c.list.map(s=>s.endY);const own=T.filter(x=>x.club===c.club&&ys.includes(x.year));
-    c.league=own.filter(x=>x.cat==='league').length;c.cup=own.filter(x=>x.cat==='cup').length;c.cont=own.filter(x=>x.cat==='cont'||x.cat==='cwc').map(x=>x.name);c.total=own.filter(x=>x.cat!=='bdo'&&x.cat!=='boot').length});
-  const bdo=by('bdo'),wc=by('wc'),natc=by('natc'),cont=by('cont'),cwc=by('cwc'),lea=by('league'),cup=by('cup'),boot=by('boot');
-  const ucl=cont.filter(x=>x.name==='UEFA Şampiyonlar Ligi');
-  const uefaAll=cont.filter(x=>x.name.startsWith('UEFA'));
-  const top3=P.seasons.filter(s=>s.bdo&&s.bdo<=3);
-  const bestBdo=P.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
-  const legacyPts=bdo.length*10+wc.length*9+ucl.length*4+natc.length*4+lea.length*1.5+cup.length*.6+cont.length*1.2+tt.goals/40;
-  const legacy=legacyPts>=70?'Tüm zamanların en iyisi':legacyPts>=40?'Futbol efsanesi':legacyPts>=20?'Dünya yıldızı':legacyPts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
-  const wcRuns=P.seasons.filter(s=>s.tourn&&s.tourn.wc);
-  const natRuns=P.seasons.filter(s=>s.tourn&&!s.tourn.wc);
-  const peak=Math.round(Math.max(...P.seasons.map(s=>s.after),...P.seasons.map(s=>s.before)));
-  const big=(title,list,sub,emptyTxt)=>`<div class="trophy${list.length?' has':''}"><div class="cnt${list.length?'':' zero'}">${list.length}</div><h3>${title}</h3><p>${list.length?esc(sub||yrs(list)):esc(emptyTxt)}</p></div>`;
-  const cab=(g)=>Object.keys(g).map(k=>`<div class="row"><b>${g[k].length}</b><div><strong>${esc(k)}</strong><small>${g[k].map(x=>x.year+(x.club&&x.club!==P.nat?' ('+esc(x.club)+')':'')).join(', ')}</small></div></div>`).join('');
-  const allG=Object.assign({},group(lea),group(cup),group(cont),group(cwc),group(natc),group(wc),group(boot));
-  $('#app').innerHTML=`
-  <section class="endhero">
-    <div class="eyebrow">Kramponlar asıldı · ${P.seasons[0].label} – ${P.seasons[P.seasons.length-1].label} · ${P.seasons.length} sezon · ${stints.length} kulüp</div>
-    <h1>${esc(P.name)}</h1>
-    <div class="legacy">${legacy}</div>
-    <div class="meta">${esc(P.nat)} · ${esc(POS[P.pos].n)} · Zirve gücü ${peak}${bestBdo?" · En iyi Ballon d'Or sırası: "+bestBdo+'.':''}</div>
-  </section>
-  <div class="band">
-    <div class="tile"><b>${num(tt.apps)}</b><span>Maç</span></div>
-    <div class="tile"><b>${num(tt.goals)}</b><span>Gol</span></div>
-    <div class="tile"><b>${num(tt.assists)}</b><span>Asist</span></div>
-    <div class="tile"><b>${tt.bdo}</b><span>Ballon d'Or</span></div>
-    <div class="tile"><b>${tt.trophies}</b><span>Takım kupası</span></div>
-    <div class="tile"><b>${tt.caps}/${tt.ngoals}</b><span>Milli maç / gol</span></div>
-  </div>
-  <div class="big4">
-    ${big("Ballon d'Or",bdo,null,top3.length?'Kazanılmadı · ilk 3: '+top3.map(s=>s.endY+' ('+s.bdo+'.)').join(', '):'Kazanılmadı')}
-    ${big('FIFA Dünya Kupası',wc,null,wcRuns.length?'Kazanılmadı · en iyi: '+bestRun(wcRuns):'Hiç oynanmadı')}
-    ${big('UEFA Şampiyonlar Ligi',ucl,null,'Kazanılmadı')}
-    ${big('UEFA kupaları (tümü)',uefaAll,uefaAll.map(x=>x.name.replace('UEFA ','')+' '+x.year).join(', '),'Kazanılmadı')}
-    ${big('Lig şampiyonluğu',lea,lea.map(x=>x.name+' '+x.year).join(', '),'Kazanılmadı')}
-    ${big('Ulusal kupa',cup,cup.map(x=>x.name+' '+x.year).join(', '),'Kazanılmadı')}
-  </div>
-  <section class="sec"><h2>Kulüp kariyeri</h2>
-    <div class="tblw"><table><thead><tr><th>Kulüp</th><th>Lig</th><th>Yıllar</th><th class="n">Sezon</th><th class="n">Maç</th><th class="n">Gol</th><th class="n">Asist</th><th>Lig şampiyonluğu</th><th>${'Ulusal kupa'}</th><th>Kıta / dünya</th></tr></thead><tbody>
-    ${stints.map(c=>`<tr><td><b>${esc(c.club)}</b></td><td>${esc(LG[c.lg].n)}</td><td>${c.from}–${c.to}</td><td class="n">${c.seasons}</td><td class="n">${c.apps}</td><td class="n">${c.goals}</td><td class="n">${c.assists}</td>
-      <td>${c.league?`<span class="won">${c.league}× kazandı</span>`:'<span class="lost">Kazanamadı</span>'}</td>
-      <td>${c.cup?`<span class="won">${c.cup}× ${esc(LG[c.lg].cup)}</span>`:`<span class="lost">${esc(LG[c.lg].cup)} yok</span>`}</td>
-      <td>${c.cont.length?`<span class="won">${esc(summ(c.cont))}</span>`:'—'}</td></tr>`).join('')}
-    </tbody></table></div>
-  </section>
-  <section class="sec"><h2>Kupa dolabı</h2>
-    ${Object.keys(allG).length||bdo.length?`<div class="cab">${bdo.length?cab({"Ballon d'Or":bdo}):''}${cab(allG)}</div>`:'<p class="note">Bu kariyerde kupa kazanılmadı.</p>'}
-  </section>
-  <section class="sec"><h2>Milli takım turnuvaları</h2>
-    ${wcRuns.length+natRuns.length?`<div class="tblw"><table><thead><tr><th>Turnuva</th><th>Sonuç</th></tr></thead><tbody>${[...wcRuns,...natRuns].sort((a,b)=>a.endY-b.endY).map(s=>`<tr><td>${esc(s.tourn.n)}</td><td>${s.tourn.won?'<span class="won">ŞAMPİYON</span>':esc(s.tourn.txt)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="note">Turnuva yıllarında milli takıma çağrılmadın.</p>'}
-  </section>
-  <section class="sec"><h2>Sezon sezon</h2>
-    <div class="tblw"><table><thead><tr><th>Sezon</th><th>Kulüp</th><th class="n">Yaş</th><th class="n">Güç</th><th class="n">Maç</th><th class="n">Gol</th><th class="n">Asist</th><th class="n">Puan</th><th class="n">Lig sırası</th><th class="n">BdO</th><th>Kupalar</th></tr></thead><tbody>
-    ${P.seasons.map(s=>`<tr><td>${s.label}</td><td>${esc(s.club)}</td><td class="n">${s.age}</td><td class="n">${Math.round(s.after)}</td><td class="n">${s.apps}</td><td class="n">${s.goals}</td><td class="n">${s.assists}</td><td class="n">${s.avg.toFixed(2)}</td><td class="n">${s.rank}</td><td class="n">${s.bdo||'—'}</td><td>${s.trophies.length?esc(s.trophies.join(', ')):'—'}</td></tr>`).join('')}
-    </tbody></table></div>
-  </section>
-  <section class="sec"><h2>Transfer geçmişi</h2>
-    <div class="tblw"><table><thead><tr><th>Yaz</th><th>Nereden</th><th>Nereye</th><th class="n">Bedel</th></tr></thead><tbody>
-    ${P.moves.map(m=>`<tr><td>${m.y}</td><td>${m.from?esc(m.from):'Altyapı'}</td><td>${esc(m.to)}</td><td class="n">${m.start?'İlk sözleşme':eur(m.fee)}</td></tr>`).join('')}
-    </tbody></table></div>
-  </section>
-  <div class="btns" style="margin-top:28px"><button class="btn primary" id="again" style="flex:0 1 260px">Yeni kariyer başlat</button></div>`;
+  const group=list=>{const g={};list.forEach(x=>{(g[x.name]=g[x.name]||[]).push(x.year)});return g};
+  const order=['wc','natc','cont','cwc','league','cup'];
+  const team=order.flatMap(c=>T.filter(x=>x.cat===c));
+  const bdo=T.filter(x=>x.cat==='bdo'),boot=T.filter(x=>x.cat==='boot');
+  const best=P.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
+  const ucl=T.filter(x=>x.name==='UEFA Şampiyonlar Ligi').length,wc=T.filter(x=>x.cat==='wc').length;
+  const pts=bdo.length*10+wc*9+ucl*4+T.filter(x=>x.cat==='natc').length*4+T.filter(x=>x.cat==='league').length*1.5+tt.goals/40;
+  const legacy=pts>=70?'Tüm zamanların en iyisi':pts>=40?'Futbol efsanesi':pts>=20?'Dünya yıldızı':pts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
+  const rows=g=>Object.keys(g).map(k=>`<div class="row"><b>${g[k].length}</b><div><strong>${esc(k)}</strong><small>${g[k].join(', ')}</small></div></div>`).join('');
+  const ind={};
+  if(bdo.length)ind["Ballon d'Or"]=bdo.map(x=>x.year);
+  boot.forEach(x=>{(ind['Gol Kralı']=ind['Gol Kralı']||[]).push(x.year)});
+  $('#app').innerHTML=`<section class="col">
+    <div class="endhero">
+      <div class="eyebrow">Kariyer bitti · 38 yaş</div>
+      <h1>${esc(P.name)}</h1>
+      <div class="legacy">${legacy}</div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b>${num(tt.apps)}</b><span>Maç</span></div>
+      <div class="tile"><b>${num(tt.goals)}</b><span>Gol</span></div>
+      <div class="tile"><b>${num(tt.assists)}</b><span>Asist</span></div>
+      <div class="tile"><b>${tt.bdo}</b><span>Ballon d'Or</span></div>
+    </div>
+    <h2 class="sh">Bireysel başarılar</h2>
+    ${Object.keys(ind).length?`<div class="cab">${rows(ind)}</div>`:`<p class="note">${best?"Ballon d'Or'da en iyi sıran: "+best+'.':'Bireysel ödül yok.'}</p>`}
+    <h2 class="sh">Kupalar (${team.length})</h2>
+    ${team.length?`<div class="cab">${rows(group(team))}</div>`:'<p class="note">Kupa kazanılmadı.</p>'}
+    <button class="btn primary" id="again">Yeni kariyer</button>
+  </section>`;
   $('#again').onclick=()=>{clearSave();P=null;OFFERS=null;renderStart();window.scrollTo(0,0)};
   window.scrollTo(0,0);
 }
-function bestRun(runs){const order=['ŞAMPİYON','Finalde kaybetti','Yarı finalde elendi','Çeyrek finalde elendi','Son 16 turunda elendi','Son 32 turunda elendi','Grupta elendi','Elemelerde kaldı'];
-  const b=runs.slice().sort((a,c)=>order.indexOf(a.tourn.txt)-order.indexOf(c.tourn.txt))[0];return b.endY+' · '+b.tourn.txt}
-function summ(arr){const g={};arr.forEach(x=>g[x]=(g[x]||0)+1);return Object.keys(g).map(k=>(g[k]>1?g[k]+'× ':'')+k).join(', ')}
 
 renderStart();
 </script>

@@ -141,6 +141,8 @@ td.n,th.n{text-align:right}
 .sh{font-size:24px;margin-top:8px}
 .endhero h1{font-size:clamp(40px,9vw,80px)}
 .cab{grid-template-columns:1fr}
+.cab .row.none b{color:var(--line)}
+.runs{display:block;margin-top:4px}
 .crest.logo{object-fit:contain}
 .crest{flex:none;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
 .offer{display:grid;gap:8px;justify-items:start}
@@ -551,7 +553,7 @@ function renderOffers(){
 function renderEnd(){
   const tt=totals(),T=P.trophies;
   const group=list=>{const g={};list.forEach(x=>{(g[x.name]=g[x.name]||[]).push(x)});return g};
-  const order=['wc','natc','cont','cwc','league','cup'];
+  const order=['natc','cont','cwc','league','cup'];
   const team=order.flatMap(c=>T.filter(x=>x.cat===c));
   const bdo=T.filter(x=>x.cat==='bdo'),boot=T.filter(x=>x.cat==='boot');
   const best=P.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
@@ -560,9 +562,13 @@ function renderEnd(){
   const legacy=pts>=70?'Tüm zamanların en iyisi':pts>=40?'Futbol efsanesi':pts>=20?'Dünya yıldızı':pts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
   const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row"><b>${g[k].length}</b><div><strong>${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
   const clubs=[...new Set(P.seasons.map(s=>s.club))];
-  const ind={};
-  if(bdo.length)ind["Ballon d'Or"]=bdo;
-  boot.forEach(x=>{(ind['Gol Kralı']=ind['Gol Kralı']||[]).push(x)});
+  const wcs=T.filter(x=>x.cat==='wc');
+  const wcRuns=P.seasons.filter(s=>s.tourn&&s.tourn.wc);
+  const ORD=['ŞAMPİYON','Finalde kaybetti','Yarı finalde elendi','Çeyrek finalde elendi','Son 16 turunda elendi','Son 32 turunda elendi','Grupta elendi','Elemelerde kaldı'];
+  const bestWc=wcRuns.slice().sort((a,b)=>ORD.indexOf(a.tourn.txt)-ORD.indexOf(b.tourn.txt))[0];
+  const irow=(title,list,empty,extra)=>{const cl=[...new Set(list.map(x=>x.club).filter(c=>c&&teamExists(c)))];
+    return `<div class="row${list.length?'':' none'}"><b>${list.length}</b><div><strong>${title}</strong><small>${list.length?list.map(x=>x.year).join(', '):esc(empty)}</small>${extra||''}${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`};
+  const wcList=wcRuns.length?`<small class="runs">${wcRuns.map(s=>s.endY+': '+(s.tourn.won?'Şampiyon':s.tourn.txt)).join(' · ')}</small>`:'';
   $('#app').innerHTML=`<section class="col">
     <div class="endhero">
       <div class="eyebrow">Kariyer bitti · 38 yaş</div>
@@ -577,7 +583,11 @@ function renderEnd(){
       <div class="tile"><b>${tt.bdo}</b><span>Ballon d'Or</span></div>
     </div>
     <h2 class="sh">Bireysel başarılar</h2>
-    ${Object.keys(ind).length?`<div class="cab">${rows(ind)}</div>`:`<p class="note">${best?"Ballon d'Or'da en iyi sıran: "+best+'.':'Bireysel ödül yok.'}</p>`}
+    <div class="cab">
+      ${irow("Ballon d'Or",bdo,best?'Kazanılmadı · en iyi sıran: '+best+'.':'Aday olmadın')}
+      ${irow('FIFA Dünya Kupası',wcs,wcRuns.length?'Kazanılmadı · en iyi: '+bestWc.endY+' '+bestWc.tourn.txt.toLocaleLowerCase('tr-TR'):'Turnuva yıllarında milli takıma çağrılmadın',wcList)}
+      ${irow('Gol Kralı',boot,'Kazanılmadı')}
+    </div>
     <h2 class="sh">Kupalar (${team.length})</h2>
     ${team.length?`<div class="cab">${rows(group(team))}</div>`:'<p class="note">Kupa kazanılmadı.</p>'}
     <button class="btn primary" id="again">Yeni kariyer</button>

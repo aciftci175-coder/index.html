@@ -630,6 +630,8 @@ function renderStart(){
   };
   $('#f').onsubmit=e=>{e.preventDefault();$('#go').click()};
   if($('#openArch'))$('#openArch').onclick=()=>renderArchive();
+  let ac=null;try{ac=sessionStorage.getItem('fky.autocont');sessionStorage.removeItem('fky.autocont')}catch(e){}
+  if(ac&&saved&&!saved.P.done){P=saved.P;OFFERS=saved.OFFERS;renderGame()}
   if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame()};
 }
 
@@ -778,6 +780,26 @@ renderStart();
 if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{LOGOS=d||{};if(P){document.querySelectorAll('.overlay').forEach(o=>o.remove());renderGame()}}).catch(()=>{});
 </script>
 
-<script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+<script>
+/* Uygulama güncelleme: her açılışta ve uygulamaya dönüldüğünde yeni sürümü kontrol et */
+(function(){
+  var BUILD='20261125092753',busy=false;
+  function reloadNow(){if(busy)return;busy=true;try{sessionStorage.setItem('fky.autocont','1')}catch(e){}location.reload()}
+  function check(){
+    fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(v){
+      if(v&&v.build&&v.build!==BUILD){
+        try{if(sessionStorage.getItem('fky.reloadedFor')===v.build)return;sessionStorage.setItem('fky.reloadedFor',v.build)}catch(e){}
+        if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)navigator.serviceWorker.getRegistration().then(function(g){if(g)g.update()});
+        caches&&caches.keys&&caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}).then(reloadNow,reloadNow);
+      }
+    }).catch(function(){});
+  }
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(function(){})});
+  }
+  window.addEventListener('load',check);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')check()});
+})();
+</script>
 </body>
 </html>

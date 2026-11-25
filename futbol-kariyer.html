@@ -629,6 +629,8 @@ function renderStart(){
   };
   $('#f').onsubmit=e=>{e.preventDefault();$('#go').click()};
   if($('#openArch'))$('#openArch').onclick=()=>renderArchive();
+  let ac=null;try{ac=sessionStorage.getItem('fky.autocont');sessionStorage.removeItem('fky.autocont')}catch(e){}
+  if(ac&&saved&&!saved.P.done){P=saved.P;OFFERS=saved.OFFERS;renderGame()}
   if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame()};
 }
 

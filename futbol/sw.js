@@ -1,11 +1,13 @@
-// Futbol Kariyer Yolu: çevrimdışı çalışma
-const CACHE='kariyer-yolu-v5';
+// Futbol Kariyer Yolu: çevrimdışı çalışma. Sürüm 20261125092753
+const CACHE='kariyer-yolu-20261125092753';
 const FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png','apple-touch-icon.png'];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(f,{cache:'reload'})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-// Önce ağ (güncel sürüm), ağ yoksa önbellek
+// Önce ağ (tarayıcı önbelleğini atlayarak güncel sürüm), ağ yoksa uygulama önbelleği
 self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  e.respondWith(fetch(e.request).then(r=>{if(r.ok&&new URL(e.request.url).origin===location.origin){const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c))}return r})
-    .catch(()=>caches.match(e.request,{ignoreSearch:true}).then(m=>m||caches.match('index.html'))));
+  const req=e.request;if(req.method!=='GET')return;
+  const url=new URL(req.url);if(url.origin!==location.origin)return;
+  if(url.pathname.endsWith('version.json'))return;
+  e.respondWith(fetch(req,{cache:'no-store'}).then(r=>{if(r.ok){const c=r.clone();caches.open(CACHE).then(x=>x.put(req,c))}return r})
+    .catch(()=>caches.match(req,{ignoreSearch:true}).then(m=>m||caches.match('index.html'))));
 });

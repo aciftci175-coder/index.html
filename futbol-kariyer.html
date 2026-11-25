@@ -180,6 +180,8 @@ td.n,th.n{text-align:right}
 .hrow{width:100%;background:none;border:0;border-bottom:1px dashed var(--line);color:var(--chalk);font:inherit;text-align:left;cursor:pointer}
 .hrow.old{cursor:default;opacity:.7}
 .hrow:focus-visible,.folderbtn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.recap{display:grid;gap:4px;padding:14px 16px}
+.recap .line:last-child{border-bottom:0}
 .season.big{border-color:var(--gold);background:linear-gradient(180deg,var(--goldbg),var(--surface) 75%)}
 .moment{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);text-transform:uppercase;color:var(--gold);line-height:1;margin-bottom:10px;animation:pop .5s ease-out both}
 @keyframes pop{from{transform:scale(.9)}to{transform:none}}
@@ -647,7 +649,9 @@ function renderGame(){
         <div class="tile"><b>${tt.assists}</b><span>Asist</span></div>
         <div class="tile"><b>${tt.trophies}</b><span>Kupa</span></div>
       </div>
-      ${t?`<div class="btns">
+      ${t&&OFFERS?`<div class="btns">
+        <button class="btn primary" id="offers">Transfer tekliflerini gör (${OFFERS.length})</button>
+      </div><p class="note" style="margin:0;text-align:center">Sezonun istatistiklerine aşağıdan bak, hazır olunca teklifleri aç.</p>`:t?`<div class="btns">
         <button class="btn primary" id="play">${Y}/${String(Y+1).slice(2)} sezonunu oyna</button>
         <button class="btn" id="fast">Transfere kadar oyna</button>
       </div>`:''}
@@ -667,7 +671,8 @@ function renderGame(){
     if(b.dataset.c){clearSave();P=null;OFFERS=null;LASTN=-1;renderStart();return}
     b.dataset.c=1;b.textContent='Silmek için tekrar bas';
   };
-  if(OFFERS)renderOffers();
+  if($('#offers'))$('#offers').onclick=()=>renderOffers();
+  if(OFFERS&&!t)renderOffers();
 }
 
 function renderOffers(){
@@ -676,6 +681,7 @@ function renderOffers(){
   ov.className='overlay';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
   ov.innerHTML=`<div class="win col">
     <h2>${first?'İlk kulübünü seç':'Transfer dönemi'}</h2>
+    ${first?'':`<div class="card recap"><div class="eyebrow">Son iki sezonun · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div>${P.seasons.slice(-2).map(s=>`<div class="line"><span>${s.label} · ${esc(s.club)}</span><span>${s.apps} maç · ${POS[P.pos].att||P.pos==='MO'?s.goals+' gol · '+s.assists+' asist':s.cs+' gol yemeden'}${s.trophies.length?' · '+s.trophies.length+' kupa':''}</span></div>`).join('')}</div>`}
     <div class="offers">${OFFERS.map((o,i)=>`<button class="offer" data-pick="${i}">
       ${crest(o.n,64)}<span class="oname">${esc(o.n)}</span>
       <span class="meta">${esc(LG[o.lg].n)}</span>
@@ -690,6 +696,7 @@ function renderOffers(){
     P.moves.push({y:Y,from:P.team?P.team.n:null,to:o.n,fee:o.fee,start:o.start});
     P.team={n:o.n,lg:o.lg};OFFERS=null;save();ov.remove();renderGame();window.scrollTo(0,0);
   });
+  ov.addEventListener('click',e=>{if(e.target===ov){ov.remove()}});
   if($('#stay'))$('#stay').onclick=()=>{OFFERS=null;save();ov.remove();renderGame()};
   ov.querySelector('[data-pick]').focus({preventScroll:true});
 }

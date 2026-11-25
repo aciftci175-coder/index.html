@@ -179,6 +179,14 @@ td.n,th.n{text-align:right}
 .archead h2{font-size:34px}
 .hrow{width:100%;background:none;border:0;border-bottom:1px dashed var(--line);color:var(--chalk);font:inherit;text-align:left;cursor:pointer}
 .hrow.old{cursor:default;opacity:.7}
+.hitem{display:flex;align-items:center;gap:6px;border-bottom:1px dashed var(--line)}
+.hitem:last-child{border-bottom:0}
+.hitem .hrow{border-bottom:0;flex:1;min-width:0}
+.trash{flex:none;display:grid;justify-items:center;gap:2px;background:none;border:1px solid transparent;border-radius:8px;color:var(--muted);cursor:pointer;padding:6px 8px;font:600 11px var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.trash:hover{color:var(--loss);border-color:var(--line)}
+.trash.confirm{color:var(--loss);border-color:var(--loss);background:var(--pitch)}
+.trash:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.btn.link.danger{color:var(--loss)}
 .hrow:focus-visible,.folderbtn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 .recap{display:grid;gap:4px;padding:14px 16px}
 .recap .line:last-child{border-bottom:0}
@@ -559,7 +567,7 @@ function mainClub(Q){const c={};Q.seasons.forEach(s=>c[s.club]=(c[s.club]||0)+1)
 function archiveAdd(Q,pts,legacy){try{const a=JSON.parse(localStorage.getItem(ARCH)||'[]');const c=JSON.parse(JSON.stringify(Q));delete c.prevRank;
   const tt=totals(Q);a.push({id:'k'+Date.now(),at:new Date().toISOString().slice(0,10),pts,legacy,P:c,sum:{name:Q.name,nat:Q.nat,pos:Q.pos,legacy,g:tt.goals,a:tt.assists,bdo:tt.bdo,wc:Q.trophies.filter(x=>x.cat==='wc').length,tr:tt.trophies,club:mainClub(Q)}});
   localStorage.setItem(ARCH,JSON.stringify(a.slice(-60)))}catch(e){}}
-function archiveDel(id){try{if(String(id).startsWith('old')){const h=JSON.parse(localStorage.getItem(OLDHOF)||'[]');h.splice(+id.slice(3),1);localStorage.setItem(OLDHOF,JSON.stringify(h))}
+function archiveDel(id){try{if(String(id).startsWith('old')){const h=JSON.parse(localStorage.getItem(OLDHOF)||'[]');h.splice(+String(id).slice(3),1);localStorage.setItem(OLDHOF,JSON.stringify(h))}
   else{const a=JSON.parse(localStorage.getItem(ARCH)||'[]').filter(x=>x.id!==id);localStorage.setItem(ARCH,JSON.stringify(a))}}catch(e){}}
 const FOLDER='<svg class="folder" viewBox="0 0 64 52" width="52" height="42" aria-hidden="true"><path d="M2 8a4 4 0 0 1 4-4h16l6 6h30a4 4 0 0 1 4 4v4H2z" fill="#c9972f"/><path d="M2 16h60v30a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" fill="#f0b445"/><rect x="10" y="24" width="26" height="4" rx="2" fill="#1b1305" opacity=".35"/></svg>';
 function hofHtml(){const a=archiveRead();if(!a.length)return '';
@@ -570,9 +578,15 @@ function renderArchive(){
   const a=archiveRead().sort((x,y)=>y.pts-x.pts);
   $('#app').innerHTML=`<section class="col">
     <div class="archead">${FOLDER}<div><div class="eyebrow">${a.length} kariyer · en iyiden başlayarak</div><h2>Kariyer arşivim</h2></div></div>
-    ${a.length?`<div class="card hof">${a.map((x,i)=>{const m=x.sum;return `<button class="hrow${x.old?' old':''}" ${x.old?'disabled':`data-k="${x.id}"`}><span class="hn">${i+1}</span>${m.club?crest(m.club,30):''}<span style="min-width:0;flex:1"><strong>${flag(m.nat)} ${esc(m.name)}</strong><small>${esc(m.legacy)} · ${m.g} gol · ${m.bdo} Ballon d'Or · ${m.wc} Dünya Kupası · ${m.tr} kupa${x.at?' · '+x.at:''}${x.old?' · eski kayıt, ayrıntı yok':''}</small></span>${x.old?'':'<span class="chev">›</span>'}</button>`}).join('')}</div>`:'<p class="note">Henüz biten kariyer yok.</p>'}
+    ${a.length?`<div class="card hof">${a.map((x,i)=>{const m=x.sum;return `<div class="hitem"><button class="hrow${x.old?' old':''}" ${x.old?'disabled':`data-k="${x.id}"`}><span class="hn">${i+1}</span>${m.club?crest(m.club,30):''}<span style="min-width:0;flex:1"><strong>${flag(m.nat)} ${esc(m.name)}</strong><small>${esc(m.legacy)} · ${m.g} gol · ${m.bdo} Ballon d'Or · ${m.wc} Dünya Kupası · ${m.tr} kupa${x.at?' · '+x.at:''}${x.old?' · eski kayıt, ayrıntı yok':''}</small></span>${x.old?'':'<span class="chev">›</span>'}</button><button class="trash" data-del="${x.id}" aria-label="${esc(m.name)} kariyerini sil"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Sil</span></button></div>`}).join('')}</div>`:'<p class="note">Henüz biten kariyer yok.</p>'}
     <button class="btn" id="home">Ana ekrana dön</button>
+    ${a.length>1?'<button class="btn link danger" id="delAll">Tüm arşivi sil</button>':''}
   </section>`;
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    if(!b.classList.contains('confirm')){document.querySelectorAll('.trash.confirm').forEach(x=>{x.classList.remove('confirm');x.querySelector('span').textContent='Sil'});b.classList.add('confirm');b.querySelector('span').textContent='Emin misin?';return}
+    archiveDel(b.dataset.del);renderArchive()});
+  if($('#delAll'))$('#delAll').onclick=e=>{const bt=e.currentTarget;if(!bt.dataset.c){bt.dataset.c=1;bt.textContent='Tüm kariyerler silinecek — onaylamak için tekrar bas';return}
+    try{localStorage.removeItem(ARCH);localStorage.removeItem(OLDHOF)}catch(err){}renderArchive()};
   $('#home').onclick=()=>{P&&!P.done?renderGame():renderStart();window.scrollTo(0,0)};
   document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const x=a.find(y=>y.id===b.dataset.k);renderEnd(x.P,x.id)});
   window.scrollTo(0,0);

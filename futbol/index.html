@@ -170,6 +170,17 @@ td.n,th.n{text-align:right}
 .cover-text h1{font-size:clamp(46px,11vw,78px);font-weight:900}
 .cover-text h1 em{font-style:normal;color:var(--amber)}
 .cover-text p{margin:0;color:var(--chalk);opacity:.85;max-width:44ch}
+.flag{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-weight:400;letter-spacing:0}
+.folderbtn{display:flex;align-items:center;gap:14px;text-align:left;cursor:pointer;color:var(--chalk);font:inherit}
+.folderbtn:hover,.hrow[data-k]:hover{border-color:var(--amber)}
+.folderbtn strong{display:block;font-family:var(--display);font-size:24px;text-transform:uppercase;line-height:1.1}
+.folderbtn small{color:var(--muted)}
+.chev{margin-left:auto;font-size:30px;color:var(--amber);line-height:1}
+.archead{display:flex;align-items:center;gap:14px}
+.archead h2{font-size:34px}
+.hrow{width:100%;background:none;border:0;border-bottom:1px dashed var(--line);color:var(--chalk);font:inherit;text-align:left;cursor:pointer}
+.hrow.old{cursor:default;opacity:.7}
+.hrow:focus-visible,.folderbtn:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 .season.big{border-color:var(--gold);background:linear-gradient(180deg,var(--goldbg),var(--surface) 75%)}
 .moment{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);text-transform:uppercase;color:var(--gold);line-height:1;margin-bottom:10px;animation:pop .5s ease-out both}
 @keyframes pop{from{transform:scale(.9)}to{transform:none}}
@@ -290,6 +301,11 @@ const CUP_ELIM=['Erken turda elendi','Son 16 turunda elendi','Çeyrek finalde el
 /* ================= milli takımlar ================= */
 const NATIONS=[['Türkiye',80,'UEFA'],['Arjantin',88,'CONMEBOL'],['Fransa',89,'UEFA'],['İspanya',89,'UEFA'],['İngiltere',88,'UEFA'],['Brezilya',86,'CONMEBOL'],['Portekiz',86,'UEFA'],['Almanya',85,'UEFA'],['Hollanda',85,'UEFA'],['İtalya',83,'UEFA'],['Belçika',82,'UEFA'],['Hırvatistan',81,'UEFA'],['Uruguay',81,'CONMEBOL'],['Kolombiya',81,'CONMEBOL'],['Fas',80,'CAF'],['İsviçre',80,'UEFA'],['Danimarka',80,'UEFA'],['Norveç',80,'UEFA'],['Japonya',79,'AFC'],['Avusturya',79,'UEFA'],['ABD',78,'CONCACAF'],['Meksika',78,'CONCACAF'],['Senegal',78,'CAF'],['Ekvador',78,'CONMEBOL'],['Ukrayna',77,'UEFA'],['İsveç',77,'UEFA'],['Fildişi Sahili',77,'CAF'],['Polonya',76,'UEFA'],['Sırbistan',76,'UEFA'],['Çekya',76,'UEFA'],['Güney Kore',76,'AFC'],['Nijerya',76,'CAF'],['Cezayir',76,'CAF'],['Kanada',76,'CONCACAF'],['Paraguay',76,'CONMEBOL'],['Mısır',75,'CAF'],['İskoçya',75,'UEFA'],['Yunanistan',75,'UEFA'],['Macaristan',75,'UEFA'],['Gürcistan',74,'UEFA'],['İran',74,'AFC'],['Gana',74,'CAF'],['Avustralya',73,'AFC'],['Şili',73,'CONMEBOL'],['Galler',73,'UEFA'],['Peru',72,'CONMEBOL'],['Arnavutluk',72,'UEFA'],['Bosna-Hersek',72,'UEFA'],['Kosova',70,'UEFA'],['Suudi Arabistan',70,'AFC'],['Katar',68,'AFC'],['Azerbaycan',62,'UEFA']].map(a=>({n:a[0],s:a[1],conf:a[2]}));
 const NAT={};NATIONS.forEach(n=>NAT[n.n]=n);
+const ISO={'Türkiye':'TR','Arjantin':'AR','Fransa':'FR','İspanya':'ES','İngiltere':'gbeng','Brezilya':'BR','Portekiz':'PT','Almanya':'DE','Hollanda':'NL','İtalya':'IT','Belçika':'BE','Hırvatistan':'HR','Uruguay':'UY','Kolombiya':'CO','Fas':'MA','İsviçre':'CH','Danimarka':'DK','Norveç':'NO','Japonya':'JP','Avusturya':'AT','ABD':'US','Meksika':'MX','Senegal':'SN','Ekvador':'EC','Ukrayna':'UA','İsveç':'SE','Fildişi Sahili':'CI','Polonya':'PL','Sırbistan':'RS','Çekya':'CZ','Güney Kore':'KR','Nijerya':'NG','Cezayir':'DZ','Kanada':'CA','Paraguay':'PY','Mısır':'EG','İskoçya':'gbsct','Yunanistan':'GR','Macaristan':'HU','Gürcistan':'GE','İran':'IR','Gana':'GH','Avustralya':'AU','Şili':'CL','Galler':'gbwls','Peru':'PE','Arnavutluk':'AL','Bosna-Hersek':'BA','Kosova':'XK','Suudi Arabistan':'SA','Katar':'QA','Azerbaycan':'AZ'};
+function flag(n){const c=ISO[n];if(!c)return '';
+  const e=c.length===2?String.fromCodePoint(...[...c].map(x=>0x1F1E6+x.charCodeAt(0)-65)):'\u{1F3F4}'+[...c].map(x=>String.fromCodePoint(0xE0000+x.charCodeAt(0))).join('')+'\u{E007F}';
+  return `<span class="flag" role="img" aria-label="${esc(n)} bayrağı">${e}</span>`}
+const NATCUPS=new Set(['FIFA Dünya Kupası','Avrupa Şampiyonası (EURO)','Copa América','Afrika Uluslar Kupası','Asya Kupası','Gold Cup']);
 const CONT={
   UEFA:{n:'Avrupa Şampiyonası (EURO)',st:[72,79,82,84,85],elim:['Grupta elendi','Son 16 turunda elendi','Çeyrek finalde elendi','Yarı finalde elendi','Finalde kaybetti'],mp:[3,1,1,1,1],w:22},
   CONMEBOL:{n:'Copa América',st:[70,79,83,85],elim:['Grupta elendi','Çeyrek finalde elendi','Yarı finalde elendi','Finalde kaybetti'],mp:[3,1,1,1],w:22},
@@ -535,10 +551,31 @@ function coverSvg(){
   </svg>`;
 }
 function fallbackCopy(t){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
-function hofHtml(){let h=[];try{h=JSON.parse(localStorage.getItem('futbol-kariyer-yolu.hof')||'[]')}catch(e){}
-  if(!h.length)return '';
-  return `<section class="col card" style="display:grid;gap:10px"><h2 style="font-size:24px">En iyi kariyerlerin</h2>
-  <div class="hof">${h.slice(0,5).map((x,i)=>`<div class="hrow"><span class="hn">${i+1}</span>${x.club?crest(x.club,26):''}<div style="min-width:0"><strong>${esc(x.name)}</strong><small>${esc(x.legacy)} · ${x.g} gol · ${x.bdo} Ballon d'Or · ${x.wc} Dünya Kupası · ${x.tr} kupa</small></div></div>`).join('')}</div></section>`}
+const ARCH='futbol-kariyer-yolu.archive',OLDHOF='futbol-kariyer-yolu.hof';
+function archiveRead(){let a=[],h=[];try{a=JSON.parse(localStorage.getItem(ARCH)||'[]')}catch(e){}try{h=JSON.parse(localStorage.getItem(OLDHOF)||'[]')}catch(e){}
+  return a.concat(h.map((x,i)=>({id:'old'+i,old:1,pts:x.pts,legacy:x.legacy,sum:x})))}
+function mainClub(Q){const c={};Q.seasons.forEach(s=>c[s.club]=(c[s.club]||0)+1);return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]}
+function archiveAdd(Q,pts,legacy){try{const a=JSON.parse(localStorage.getItem(ARCH)||'[]');const c=JSON.parse(JSON.stringify(Q));delete c.prevRank;
+  const tt=totals(Q);a.push({id:'k'+Date.now(),at:new Date().toISOString().slice(0,10),pts,legacy,P:c,sum:{name:Q.name,nat:Q.nat,pos:Q.pos,legacy,g:tt.goals,a:tt.assists,bdo:tt.bdo,wc:Q.trophies.filter(x=>x.cat==='wc').length,tr:tt.trophies,club:mainClub(Q)}});
+  localStorage.setItem(ARCH,JSON.stringify(a.slice(-60)))}catch(e){}}
+function archiveDel(id){try{if(String(id).startsWith('old')){const h=JSON.parse(localStorage.getItem(OLDHOF)||'[]');h.splice(+id.slice(3),1);localStorage.setItem(OLDHOF,JSON.stringify(h))}
+  else{const a=JSON.parse(localStorage.getItem(ARCH)||'[]').filter(x=>x.id!==id);localStorage.setItem(ARCH,JSON.stringify(a))}}catch(e){}}
+const FOLDER='<svg class="folder" viewBox="0 0 64 52" width="52" height="42" aria-hidden="true"><path d="M2 8a4 4 0 0 1 4-4h16l6 6h30a4 4 0 0 1 4 4v4H2z" fill="#c9972f"/><path d="M2 16h60v30a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" fill="#f0b445"/><rect x="10" y="24" width="26" height="4" rx="2" fill="#1b1305" opacity=".35"/></svg>';
+function hofHtml(){const a=archiveRead();if(!a.length)return '';
+  const best=a.slice().sort((x,y)=>y.pts-x.pts)[0].sum;
+  return `<button class="col card folderbtn" id="openArch">${FOLDER}<span style="min-width:0"><strong>Kariyer arşivim</strong><small>${a.length} kariyer · en iyisi: ${esc(best.name)} (${esc(best.legacy)})</small></span><span class="chev" aria-hidden="true">›</span></button>`}
+function renderArchive(){
+  document.querySelectorAll('.overlay').forEach(o=>o.remove());
+  const a=archiveRead().sort((x,y)=>y.pts-x.pts);
+  $('#app').innerHTML=`<section class="col">
+    <div class="archead">${FOLDER}<div><div class="eyebrow">${a.length} kariyer · en iyiden başlayarak</div><h2>Kariyer arşivim</h2></div></div>
+    ${a.length?`<div class="card hof">${a.map((x,i)=>{const m=x.sum;return `<button class="hrow${x.old?' old':''}" ${x.old?'disabled':`data-k="${x.id}"`}><span class="hn">${i+1}</span>${m.club?crest(m.club,30):''}<span style="min-width:0;flex:1"><strong>${flag(m.nat)} ${esc(m.name)}</strong><small>${esc(m.legacy)} · ${m.g} gol · ${m.bdo} Ballon d'Or · ${m.wc} Dünya Kupası · ${m.tr} kupa${x.at?' · '+x.at:''}${x.old?' · eski kayıt, ayrıntı yok':''}</small></span>${x.old?'':'<span class="chev">›</span>'}</button>`}).join('')}</div>`:'<p class="note">Henüz biten kariyer yok.</p>'}
+    <button class="btn" id="home">Ana ekrana dön</button>
+  </section>`;
+  $('#home').onclick=()=>{P&&!P.done?renderGame():renderStart();window.scrollTo(0,0)};
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const x=a.find(y=>y.id===b.dataset.k);renderEnd(x.P,x.id)});
+  window.scrollTo(0,0);
+}
 function renderStart(){
   const saved=load();
   const nats=NATIONS.map(n=>`<option${n.n==='Türkiye'?' selected':''}>${esc(n.n)}</option>`).join('');
@@ -571,14 +608,15 @@ function renderStart(){
     OFFERS=startOffers($('#plg').value);renderGame();
   };
   $('#f').onsubmit=e=>{e.preventDefault();$('#go').click()};
+  if($('#openArch'))$('#openArch').onclick=()=>renderArchive();
   if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame()};
 }
 
-function totals(){
+function totals(Q){Q=Q||P;
   const t={apps:0,goals:0,assists:0};
-  P.seasons.forEach(s=>{t.apps+=s.apps;t.goals+=s.goals;t.assists+=s.assists});
-  t.trophies=P.trophies.filter(x=>x.cat!=='bdo'&&x.cat!=='boot').length;
-  t.bdo=P.trophies.filter(x=>x.cat==='bdo').length;
+  Q.seasons.forEach(s=>{t.apps+=s.apps;t.goals+=s.goals;t.assists+=s.assists});
+  t.trophies=Q.trophies.filter(x=>x.cat!=='bdo'&&x.cat!=='boot').length;
+  t.bdo=Q.trophies.filter(x=>x.cat==='bdo').length;
   return t;
 }
 
@@ -601,7 +639,7 @@ function renderGame(){
     <div class="pcard">
       <div class="prow">
         ${t?crest(t.n,54):''}<div class="ovr">${Math.round(P.ovr)}</div>
-        <div style="min-width:0"><div class="pname">${esc(P.name)}</div>
+        <div style="min-width:0"><div class="pname">${flag(P.nat)} ${esc(P.name)}</div>
           <div class="meta">${P.age} yaş · ${esc(POS[P.pos].n)}${t?' · '+esc(t.n):''}</div></div>
       </div>
       <div class="tiles">
@@ -619,7 +657,7 @@ function renderGame(){
       ${h?`<div class="moment">${esc(h)}</div>`:''}
       <div class="shead"><h2>${s.label}</h2><span class="eyebrow cl">${crest(s.club,20)}${esc(s.club)}</span></div>
       <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}${s.injured?' · sakatlık':''}</div>
-      ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${esc(x)}</span>`).join('')}</div>`:''}
+      ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${NATCUPS.has(x)?flag(P.nat)+' ':''}${esc(x)}</span>`).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${esc(x)}</span>`).join('')}</div>`:''}
     </div>`}).join('')}
     <button class="btn link" id="reset">Yeni kariyer</button>
   </section>`;
@@ -658,21 +696,22 @@ function renderOffers(){
 }
 
 /* ================= kariyer sonu ================= */
-function renderEnd(){
-  const tt=totals(),T=P.trophies;
+function renderEnd(arch,archId){
+  const Q=arch||P,live=!arch;
+  const tt=totals(Q),T=Q.trophies;
   const group=list=>{const g={};list.forEach(x=>{(g[x.name]=g[x.name]||[]).push(x)});return g};
   const order=['natc','cont','cwc','league','cup'];
   const team=order.flatMap(c=>T.filter(x=>x.cat===c));
   const bdo=T.filter(x=>x.cat==='bdo'),boot=T.filter(x=>x.cat==='boot');
-  const best=P.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
+  const best=Q.seasons.reduce((m,s)=>s.bdo&&(!m||s.bdo<m)?s.bdo:m,null);
   const ucl=T.filter(x=>x.name==='UEFA Şampiyonlar Ligi').length,wc=T.filter(x=>x.cat==='wc').length;
   const pts=bdo.length*10+wc*9+ucl*4+T.filter(x=>x.cat==='natc').length*4+T.filter(x=>x.cat==='league').length*1.5+tt.goals/40;
   const HOF_KEY='futbol-kariyer-yolu.hof';
   const legacy=pts>=70?'Tüm zamanların en iyisi':pts>=40?'Futbol efsanesi':pts>=20?'Dünya yıldızı':pts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
-  const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row"><b>${g[k].length}</b><div><strong>${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
-  const clubs=[...new Set(P.seasons.map(s=>s.club))];
+  const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row"><b>${g[k].length}</b><div><strong>${NATCUPS.has(k)?flag(Q.nat)+' ':''}${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
+  const clubs=[...new Set(Q.seasons.map(s=>s.club))];
   const wcs=T.filter(x=>x.cat==='wc');
-  const wcRuns=P.seasons.filter(s=>s.tourn&&s.tourn.wc);
+  const wcRuns=Q.seasons.filter(s=>s.tourn&&s.tourn.wc);
   const ORD=['ŞAMPİYON','Finalde kaybetti','Yarı finalde elendi','Çeyrek finalde elendi','Son 16 turunda elendi','Son 32 turunda elendi','Grupta elendi','Elemelerde kaldı'];
   const bestWc=wcRuns.slice().sort((a,b)=>ORD.indexOf(a.tourn.txt)-ORD.indexOf(b.tourn.txt))[0];
   const irow=(title,list,empty,extra)=>{const cl=[...new Set(list.map(x=>x.club).filter(c=>c&&teamExists(c)))];
@@ -680,8 +719,8 @@ function renderEnd(){
   const wcList=wcRuns.length?`<small class="runs">${wcRuns.map(s=>s.endY+': '+(s.tourn.won?'Şampiyon':s.tourn.txt)).join(' · ')}</small>`:'';
   $('#app').innerHTML=`<section class="col">
     <div class="endhero">
-      <div class="eyebrow">Kariyer bitti · 38 yaş</div>
-      <h1>${esc(P.name)}</h1>
+      <div class="eyebrow">${live?'Kariyer bitti · 38 yaş':'Kariyer arşivi'} · ${flag(Q.nat)} ${esc(Q.nat)} · ${esc(POS[Q.pos].n)}</div>
+      <h1>${esc(Q.name)}</h1>
       <div class="legacy">${legacy}</div>
       <div class="crests big">${clubs.map(c=>crest(c,34)).join('')}</div>
     </div>
@@ -694,16 +733,19 @@ function renderEnd(){
     <h2 class="sh">Bireysel başarılar</h2>
     <div class="cab">
       ${irow("Ballon d'Or",bdo,best?'Kazanılmadı · en iyi sıran: '+best+'.':'Aday olmadın')}
-      ${irow('FIFA Dünya Kupası',wcs,wcRuns.length?'Kazanılmadı · en iyi: '+bestWc.endY+' '+bestWc.tourn.txt.toLocaleLowerCase('tr-TR'):'Turnuva yıllarında milli takıma çağrılmadın',wcList)}
+      ${irow(flag(Q.nat)+' FIFA Dünya Kupası',wcs,wcRuns.length?'Kazanılmadı · en iyi: '+bestWc.endY+' '+bestWc.tourn.txt.toLocaleLowerCase('tr-TR'):'Turnuva yıllarında milli takıma çağrılmadın',wcList)}
       ${irow('Gol Kralı',boot,'Kazanılmadı')}
     </div>
     <h2 class="sh">Kupalar (${team.length})</h2>
     ${team.length?`<div class="cab">${rows(group(team))}</div>`:'<p class="note">Kupa kazanılmadı.</p>'}
-    <div class="btns"><button class="btn primary" id="again">Yeni kariyer</button><button class="btn" id="copy">Kariyeri kopyala</button></div>
+    <div class="btns">${live?'<button class="btn primary" id="again">Yeni kariyer</button><button class="btn" id="arch">Kariyer arşivim</button>':'<button class="btn primary" id="back">Arşive dön</button>'}<button class="btn" id="copy">Kariyeri kopyala</button></div>
+    ${live?'':'<button class="btn link" id="del">Bu kariyeri arşivden sil</button>'}
   </section>`;
-  if(!P.hof){P.hof=1;save();try{const h=JSON.parse(localStorage.getItem(HOF_KEY)||'[]');h.push({name:P.name,nat:P.nat,pos:P.pos,legacy,pts:Math.round(pts),g:tt.goals,a:tt.assists,bdo:tt.bdo,wc,tr:tt.trophies+wc,club:[...new Set(P.seasons.map(s=>s.club))].sort((a,b)=>P.seasons.filter(s=>s.club===b).length-P.seasons.filter(s=>s.club===a).length)[0]});h.sort((a,b)=>b.pts-a.pts);localStorage.setItem(HOF_KEY,JSON.stringify(h.slice(0,10)))}catch(e){}}
-  $('#again').onclick=()=>{clearSave();P=null;OFFERS=null;LASTN=-1;renderStart();window.scrollTo(0,0)};
-  $('#copy').onclick=e=>{const b=e.currentTarget;const txt=`${P.name} (${P.nat}, ${POS[P.pos].n}) · ${legacy}\n${tt.apps} maç, ${tt.goals} gol, ${tt.assists} asist\nBallon d'Or: ${tt.bdo} · Dünya Kupası: ${wc}\nKupalar: ${team.length?Object.entries(group(team)).map(([k,v])=>v.length+'× '+k).join(', '):'yok'}\nKulüpler: ${[...new Set(P.seasons.map(s=>s.club))].join(' → ')}`;
+  if(live&&!P.hof){P.hof=1;save();archiveAdd(P,Math.round(pts),legacy)}
+  if(!live){$('#back').onclick=()=>renderArchive();$('#del').onclick=e=>{const bt=e.currentTarget;if(!bt.dataset.c){bt.dataset.c=1;bt.textContent='Silmek için tekrar bas';return}archiveDel(archId);renderArchive()}}
+  else{$('#arch').onclick=()=>renderArchive();
+  $('#again').onclick=()=>{clearSave();P=null;OFFERS=null;LASTN=-1;renderStart();window.scrollTo(0,0)};}
+  $('#copy').onclick=e=>{const b=e.currentTarget;const txt=`${Q.name} (${Q.nat}, ${POS[Q.pos].n}) · ${legacy}\n${tt.apps} maç, ${tt.goals} gol, ${tt.assists} asist\nBallon d'Or: ${tt.bdo} · Dünya Kupası: ${wc}\nKupalar: ${team.length?Object.entries(group(team)).map(([k,v])=>v.length+'× '+k).join(', '):'yok'}\nKulüpler: ${[...new Set(Q.seasons.map(s=>s.club))].join(' → ')}`;
     const done=()=>{b.textContent='Kopyalandı'};
     try{navigator.clipboard.writeText(txt).then(done,()=>{fallbackCopy(txt);done()})}catch(err){fallbackCopy(txt);done()}};
   window.scrollTo(0,0);

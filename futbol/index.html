@@ -240,7 +240,30 @@ td.n,th.n{text-align:right}
 .o2name{font-family:var(--display);font-weight:900;font-size:20px;text-transform:uppercase;line-height:1.05;margin-top:4px;overflow-wrap:anywhere}
 .o2fee{font-family:var(--display);font-weight:800;font-size:26px;color:var(--amber);margin-top:4px;font-variant-numeric:tabular-nums}
 .o2lbl{font:600 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.sheet #stay{padding:10px}
+.sheet #stay{padding:9px;font-size:14px}
+.sheet{max-height:46vh}
+.sheet-in{gap:8px}
+.shtop h2{font-size:22px}
+.offers2{grid-template-columns:1fr;gap:6px}
+.offer2{display:flex;align-items:center;gap:10px;padding:8px 12px}
+.o2txt{display:grid;min-width:0;flex:1}
+.o2txt .o2name{font-size:17px;margin:0}
+.o2txt .meta{font-size:12px}
+.offer2 .o2fee{font-size:22px;margin:0}
+.stint{padding:12px 14px}
+.stint .stop{margin-bottom:8px;gap:10px}
+.stint h2{font-size:21px}
+.stint .eyebrow{font-size:10.5px}
+.stint .tiles{gap:6px}
+.stint .tile{padding:6px 4px}
+.stint .tile b{font-size:22px}
+.stint .tile span{font-size:9.5px}
+.stint .srows{margin-top:6px}
+.stint .srow{padding:5px 0;font-size:13px;gap:8px}
+.stint .smom{font-size:13px}
+.cdet{font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.stint .chips{margin-top:6px}
+.stint .chip{font-size:11px;padding:3px 8px}
 .cover.hero2{max-width:1180px;margin:0 auto;width:100%;position:relative;border-radius:16px}
 .poster{position:relative;overflow:hidden;background:var(--bg)}
 .poster .pbg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(26px) brightness(.36) saturate(1.2)}
@@ -907,6 +930,12 @@ function seasonDetail(s){const a=[];
 const FOCUS={gelisim:{n:'Gelişim',d:'Daha hızlı gelişirsin (yaşlanınca düşüş yavaşlar), ama sakatlık riski artar ve maçlarda biraz daha az etkili olursun.'},
   denge:{n:'Dengeli',d:'Gelişim ve maç performansı arasında denge. Ek risk yok.'},
   form:{n:'Form',d:'Bu sezon maçlarda daha etkili olursun ve sakatlık riski azalır, ama gelişimin yavaşlar.'}};
+function compactDetail(s){const a=[`${esc(s.cup.n)}: ${shortTxt(s.cup.won?'ŞAMPİYON':s.cup.txt)}`];
+  if(s.euro)a.push(`${esc(s.euro.n.replace('UEFA ',''))}: ${shortTxt(s.euro.won?'ŞAMPİYON':s.euro.txt)}`);
+  if(s.cwc)a.push(`Kulüpler DK: ${shortTxt(s.cwc.won?'ŞAMPİYON':s.cwc.txt)}`);
+  if(s.tourn)a.push(`${flag(P.nat)} ${esc(s.tourn.n.replace(/ \d+$/,'').replace('FIFA ','').replace(' (EURO)',''))}: ${shortTxt(s.tourn.won?'ŞAMPİYON':s.tourn.txt)}`);
+  if(s.caps)a.push(`Milli: ${s.caps} maç ${s.ngoals} gol`);
+  return a.join(' · ')}
 function bigMoment(s){
   if(s.bdo===1)return "Ballon d'Or senin!";
   if(s.tourn&&s.tourn.won)return s.tourn.wc?'Dünya şampiyonu!':s.tourn.n.replace(/ \d+$/,'')+' şampiyonu!';
@@ -928,14 +957,14 @@ function stintHtml(def){
   const sum=k=>ss.reduce((a,x)=>a+x[k],0),av=ss.reduce((a,x)=>a+x.avg,0)/Math.max(1,ss.length),trs=ss.flatMap(x=>x.trophies);
   return `<section class="col">
     <div class="card stint">
-      <div class="stop">${crest(club,46)}<div style="min-width:0"><div class="eyebrow">${flag(P.nat)} ${esc(P.name)} · ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div><h2>${esc(club)}'de ${ss.length} sezon</h2></div></div>
+      <div class="stop">${crest(club,34)}<div style="min-width:0"><h2>${esc(club)}'de ${ss.length} sezon</h2><div class="eyebrow">${flag(P.nat)} ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div></div></div>
       <div class="tiles">
         <div class="tile"><b>${sum('apps')}</b><span>Maç</span></div>
         <div class="tile"><b>${def?sum('cs'):sum('goals')}</b><span>${def?'Gol yemeden':'Gol'}</span></div>
         <div class="tile"><b>${def?sum('goals'):sum('assists')}</b><span>${def?'Gol':'Asist'}</span></div>
         <div class="tile"><b>${av.toFixed(1).replace('.',',')}</b><span>Ort. puan</span></div>
       </div>
-      <div class="srows">${ss.map(x=>{const h=bigMoment(x);return `<div class="srow"><b>${x.label}</b><div style="min-width:0">${h?`<div class="smom">${esc(h)}</div>`:''}<span>${x.apps} maç · ${def?x.cs+' gol yemeden':x.goals+' gol · '+x.assists+' asist'} · ${x.rank===1?'<span class="won">lig şampiyonu</span>':'lig '+x.rank+'.'}${x.bdo&&x.bdo<=10?" · Ballon d'Or "+x.bdo+'.':''}${x.injured?' · sakatlık':''}</span><div class="sdet">${seasonDetail(x)}</div></div></div>`}).join('')}</div>
+      <div class="srows">${ss.map(x=>{const h=bigMoment(x);return `<div class="srow"><b>${x.label}</b><div style="min-width:0">${h?`<div class="smom">${esc(h)}</div>`:''}<span>${x.apps} maç · ${def?x.cs+' gol yemeden':x.goals+' gol · '+x.assists+' asist'} · ${x.rank===1?'<span class="won">lig şampiyonu</span>':'lig '+x.rank+'.'}${x.bdo&&x.bdo<=10?" · BdO "+x.bdo+'.':''}${x.injured?' · sakatlık':''}</span><div class="cdet">${compactDetail(x)}</div></div></div>`}).join('')}</div>
       ${trs.length||ss.some(x=>(x.miles||[]).length)?`<div class="chips">${trs.map(x=>chipHtml(x,P.nat)).join('')}${ss.flatMap(x=>x.miles||[]).map(x=>`<span class="chip g">${x==='Takım kaptanı oldun'?trophyIcon('captain',18):''}${esc(x)}</span>`).join('')}</div>`:'<p class="note" style="margin:8px 0 0">Bu kulüpte kupa kazanamadın.</p>'}
     </div>
   </section>`}
@@ -983,10 +1012,10 @@ function renderOffers(){
   sh.className='sheet'+(first?' first':'');sh.setAttribute('role','dialog');sh.setAttribute('aria-label',first?'İlk kulübünü seç':'Transfer teklifleri');
   sh.innerHTML=`<div class="sheet-in">
     <div class="grab" aria-hidden="true"></div>
-    <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">Yaz ${Y}</span></div>
+    <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">Yaz ${Y} · bedel</span></div>
     <div class="offers2">${OFFERS.map((o,i)=>`<button class="offer2" data-pick="${i}">
-      ${crest(o.n,44)}<span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span>
-      <span class="o2fee">${eur(o.fee)}</span><span class="o2lbl">Transfer bedeli</span>
+      ${crest(o.n,34)}<span class="o2txt"><span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span></span>
+      <span class="o2fee">${eur(o.fee)}</span>
     </button>`).join('')}</div>
     ${first?'':`<button class="btn" id="stay">${esc(P.team.n)} kulübünde kal</button>`}
   </div>`;
@@ -1074,7 +1103,7 @@ if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{L
 <script>
 /* Uygulama güncelleme: her açılışta ve uygulamaya dönüldüğünde yeni sürümü kontrol et */
 (function(){
-  var BUILD='20261126130253',busy=false;
+  var BUILD='20261126130717',busy=false;
   function reloadNow(){if(busy)return;busy=true;try{sessionStorage.setItem('fky.autocont','1')}catch(e){}location.reload()}
   function check(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(v){

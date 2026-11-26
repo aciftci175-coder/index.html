@@ -559,7 +559,7 @@ function compFor(t){const l=LG[t.lg],r=rankOf(t),cs=COMPS[l.conf]||[];let acc=0;
 function simKO(s,st,elim,mp,sc){let m=0;for(let k=0;k<st.length;k++){m+=mp[k];if(R()>sig((s-st[k]+gauss()*2)/(sc||4)))return{won:false,txt:elim[k],m,r:k}}return{won:true,txt:'ŞAMPİYON',m,r:st.length}}
 
 function newCareer(name,nat,pos){
-  return{name,nat,pos,age:17,ovr:rnd(60,65),pot:78+Math.pow(R(),1.2)*16,team:null,seasons:[],trophies:[],prevRank:{},contWins:[],moves:[],done:false};
+  return{name,nat,pos,age:17,ovr:rnd(60,65),pot:78+Math.pow(R(),1.2)*16,team:null,seasons:[],trophies:[],prevRank:{},contWins:[],moves:[],done:false,lastMoveAt:0,windows:0};
 }
 const teamExists=n=>LEAGUES.some(l=>l.teams.some(t=>t.n===n));
 function perfF(){const r=P.seasons.slice(-2);if(!r.length)return 1;return clamp(1+(r.reduce((a,s)=>a+s.avg,0)/r.length-7)*.25,.8,1.3)}
@@ -603,6 +603,7 @@ const INDV=new Set(['bdo','boot','gboy','yashin','wcball']);
 function addT(cat,name,year,club,extra){P.trophies.push(Object.assign({cat,name,year,club},extra||{}))}
 
 function playSeason(){
+  if(P.lastMoveAt==null){P.lastMoveAt=P.seasons.length;P.windows=Math.min(10,Math.floor(P.seasons.length/2))}
   const tBefore=P.trophies.filter(x=>!INDV.has(x.cat)).length;
   const prevT=P.seasons.reduce((a,x)=>(a.g+=x.goals,a.a+=x.apps,a.c+=x.caps,a),{g:0,a:0,c:0});
   const i=P.seasons.length,Y=2026+i,endY=Y+1,age=P.age;
@@ -698,7 +699,7 @@ function playSeason(){
     cup:{n:l.cup,txt:cup.txt,won:cup.won},euro,cwc,caps,ngoals,tourn,bdo,boot,injured,trophies,miles,value:mv(P.ovr,age+1)});
   P.age++;
   if(P.age>38){P.done=true;OFFERS=null}
-  else if(P.seasons.length%2===0)OFFERS=makeOffers();
+  else if((P.windows||0)<10&&P.seasons.length-P.lastMoveAt>=2){OFFERS=makeOffers();P.windows=(P.windows||0)+1}
   save();
 }
 
@@ -993,11 +994,12 @@ function seasonCardHtml(s,def){const h=bigMoment(s);return `<div class="card sea
       ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>chipHtml(x,P.nat)).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${x==='Takım kaptanı oldun'?trophyIcon('captain',18):''}${esc(x)}</span>`).join('')}</div>`:''}
     </div>`}
 function stintHtml(def){
-  const club=P.team.n,ss=[];for(let i=P.seasons.length-1;i>=0&&P.seasons[i].club===club;i--)ss.unshift(P.seasons[i]);
+  const club=P.team.n;let ss=[];if(P.lastMoveAt!=null)ss=P.seasons.slice(P.lastMoveAt);if(!ss.length)for(let i=P.seasons.length-1;i>=0&&P.seasons[i].club===club;i--)ss.unshift(P.seasons[i]);
+  const stintLen=(()=>{let k=0;for(let i=P.seasons.length-1;i>=0&&P.seasons[i].club===club;i--)k++;return k})();
   const sum=k=>ss.reduce((a,x)=>a+x[k],0),av=ss.reduce((a,x)=>a+x.avg,0)/Math.max(1,ss.length),trs=ss.flatMap(x=>x.trophies);
   return `<section class="col">
     <div class="card stint">
-      <div class="stop">${crest(club,44)}<div style="min-width:0"><h2>${esc(club)}'de ${ss.length} sezon</h2><div class="eyebrow">${flag(P.nat)} ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div></div></div>
+      <div class="stop">${crest(club,44)}<div style="min-width:0"><h2>${esc(club)}'de ${stintLen>ss.length?'son ':''}${ss.length} sezon</h2><div class="eyebrow">${flag(P.nat)} ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div></div></div>
       <div class="tiles">
         <div class="tile"><b>${sum('apps')}</b><span>Maç</span></div>
         <div class="tile"><b>${def?sum('cs'):sum('goals')}</b><span>${def?'Gol yemeden':'Gol'}</span></div>
@@ -1053,7 +1055,7 @@ function renderOffers(){
   sh.className='sheet'+(first?' first':'');sh.setAttribute('role','dialog');sh.setAttribute('aria-label',first?'İlk kulübünü seç':'Transfer teklifleri');
   sh.innerHTML=`<div class="sheet-in">
     <div class="grab" aria-hidden="true"></div>
-    <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">Yaz ${Y} · bedel</span></div>
+    <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">${first?'Yaz '+Y:'Transfer dönemi '+(P.windows||1)+'/10 · Yaz '+Y}</span></div>
     <div class="offers2">${OFFERS.map((o,i)=>`<button class="offer2" data-pick="${i}">
       ${crest(o.n,46)}<span class="o2txt"><span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span></span>
       <span class="o2fee">${eur(o.fee)}</span>
@@ -1072,9 +1074,9 @@ function renderOffers(){
   sh.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
     const o=OFFERS[+b.dataset.pick];
     P.moves.push({y:Y,from:P.team?P.team.n:null,to:o.n,fee:o.fee,start:o.start});
-    P.team={n:o.n,lg:o.lg};OFFERS=null;save();closeSheet();autoPlay();window.scrollTo(0,0);
+    P.team={n:o.n,lg:o.lg};P.lastMoveAt=P.seasons.length;OFFERS=null;save();closeSheet();autoPlay();window.scrollTo(0,0);
   });
-  if(sh.querySelector('#stay'))sh.querySelector('#stay').onclick=()=>{OFFERS=null;save();closeSheet();autoPlay();window.scrollTo(0,0)};
+  if(sh.querySelector('#stay'))sh.querySelector('#stay').onclick=()=>{P.lastMoveAt=P.seasons.length;OFFERS=null;save();closeSheet();autoPlay();window.scrollTo(0,0)};
 }
 let ov=null;
 /* ================= kariyer sonu ================= */
@@ -1151,7 +1153,7 @@ if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{L
 <script>
 /* Uygulama güncelleme: her açılışta ve uygulamaya dönüldüğünde yeni sürümü kontrol et */
 (function(){
-  var BUILD='20261126150203',busy=false;
+  var BUILD='20261126150651',busy=false;
   function reloadNow(){if(busy)return;busy=true;try{sessionStorage.setItem('fky.autocont','1')}catch(e){}location.reload()}
   function check(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(v){

@@ -683,6 +683,29 @@ function chipHtml(x,nat){const k=trophyKind(x);return `<span class="chip">${trop
 function journeyHtml(Q){const st=[];Q.seasons.forEach(s=>{const c=st[st.length-1];if(c&&c.club===s.club){c.to=s.endY;c.n++}else st.push({club:s.club,from:s.endY-1,to:s.endY,n:1})});
   return `<div class="journey">${st.map((c,i)=>`${i?'<span class="jarrow" aria-hidden="true">→</span>':''}<span class="jstop">${crest(c.club,32)}<small>${String(c.from).slice(2)}–${String(c.to).slice(2)}</small></span>`).join('')}</div>`}
 /* ================= ekranlar ================= */
+const LEGENDS=[
+  {n:'PELÉ',no:10,base:'#ffd400',stripe:null,txt:'#0a8f3c',trim:'#0a8f3c'},
+  {n:'MARADONA',no:10,base:'#12a0d7',stripe:null,txt:'#ffffff',trim:'#ffffff'},
+  {n:'ZIDANE',no:10,base:'#1b3c9a',stripe:null,txt:'#ffffff',trim:'#e4002b'},
+  {n:'MESSI',no:10,base:'#ffffff',stripe:'#75aadb',txt:'#111111',trim:'#75aadb'},
+  {n:'RONALDO',no:7,base:'#d4001f',stripe:null,txt:'#f4f4f4',trim:'#0a7a3c'},
+  {n:'RONALDINHO',no:10,base:'#a50044',stripe:'#004d98',txt:'#ffd400',trim:'#ffd400'}];
+function legendsSvg(){
+  const shirt='M32 0Q50 12 68 0L100 16 89 46 79 41V118H21V41L11 46 0 16Z';
+  const xs=[18,146,274,426,554,682],ys=[34,22,14,14,22,34],sc=[.95,1,1.06,1.06,1,.95];
+  return `<g class="legends">${LEGENDS.map((L,i)=>{const id='lg'+i;
+    const stripes=L.stripe?[14,38,62,86].map(x=>`<rect x="${x}" y="0" width="12" height="120" fill="${L.stripe}"/>`).join(''):'';
+    const fs=L.n.length>8?10:L.n.length>6?12:14;
+    return `<g transform="translate(${xs[i]} ${ys[i]}) scale(${sc[i]})">
+      <ellipse cx="50" cy="128" rx="46" ry="6" fill="#000" opacity=".35"/>
+      <line x1="50" y1="-14" x2="50" y2="2" stroke="#9aa7a0" stroke-width="2"/><path d="M38 6Q50-4 62 6" fill="none" stroke="#9aa7a0" stroke-width="2.4"/>
+      <clipPath id="${id}"><path d="${shirt}"/></clipPath>
+      <g clip-path="url(#${id})"><rect width="100" height="120" fill="${L.base}"/>${stripes}<rect width="100" height="120" fill="url(#cvShirtShade)"/></g>
+      <path d="${shirt}" fill="none" stroke="${L.trim}" stroke-width="2.2"/>
+      <path d="M32 0Q50 12 68 0" fill="none" stroke="${L.trim}" stroke-width="4"/>
+      <text x="50" y="34" text-anchor="middle" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="800" font-size="${fs}" letter-spacing="1" fill="${L.txt}">${L.n}</text>
+      <text x="50" y="96" text-anchor="middle" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="900" font-size="56" fill="${L.txt}" stroke="${L.stripe?'#ffffff':'none'}" stroke-width="${L.stripe?1.5:0}" paint-order="stroke">${L.no}</text>
+    </g>`}).join('')}</g>`}
 function coverSvg(){
   const W=800,H=360,hz=196,tw=250,bw=980;
   const xAt=(y,side)=>{const t=(y-hz)/(H-hz);const w=tw+(bw-tw)*t;return W/2+side*w/2};
@@ -698,6 +721,7 @@ function coverSvg(){
     <linearGradient id="cvSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030a07"/><stop offset="1" stop-color="#0d2219"/></linearGradient>
     <radialGradient id="cvGlow"><stop offset="0" stop-color="#fff6dc" stop-opacity=".95"/><stop offset=".15" stop-color="#f6d58a" stop-opacity=".55"/><stop offset="1" stop-color="#f0b445" stop-opacity="0"/></radialGradient>
     <linearGradient id="cvBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c8" stop-opacity=".22"/><stop offset="1" stop-color="#fff2c8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="cvShirtShade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".45" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#000" stop-opacity=".32"/></linearGradient>
     <linearGradient id="cvShade" x1="0" y1="0" x2="0" y2="1"><stop offset=".7" stop-color="#07130e" stop-opacity="0"/><stop offset="1" stop-color="#07130e" stop-opacity=".92"/></linearGradient>
   </defs>
   <rect width="${W}" height="${H}" fill="url(#cvSky)"/>
@@ -715,9 +739,8 @@ function coverSvg(){
   <circle cx="400" cy="${mid}" r="3" fill="#e6efe8"/>
   <g transform="translate(400 ${mid-9})"><circle r="9" fill="#f4f7f4"/><path d="M0-4 L4-1 L2.6 4 L-2.6 4 L-4-1Z" fill="#1b2a22"/></g>
   <ellipse cx="400" cy="${mid+1}" rx="10" ry="2.5" fill="#000" opacity=".35"/>
-  <rect x="122" y="40" width="5" height="${hz-40}" fill="#13261d"/><rect x="673" y="40" width="5" height="${hz-40}" fill="#13261d"/>
-  <rect x="92" y="30" width="66" height="18" rx="2" fill="#1d2f26"/><rect x="642" y="30" width="66" height="18" rx="2" fill="#1d2f26"/>
-  <circle cx="125" cy="39" r="120" fill="url(#cvGlow)"/><circle cx="675" cy="39" r="120" fill="url(#cvGlow)"/>
+      <circle cx="250" cy="10" r="150" fill="url(#cvGlow)" opacity=".7"/><circle cx="550" cy="10" r="150" fill="url(#cvGlow)" opacity=".7"/>
+  ${legendsSvg()}
   <rect width="${W}" height="${H}" fill="url(#cvShade)"/>
   </svg>`;
 }
@@ -799,9 +822,7 @@ function renderStart(){
   $('#app').innerHTML=`<section class="cover col">
     ${coverSvg()}
     <div class="cover-text">
-      <div class="eyebrow">Futbol kariyer simülasyonu · Sezon 2026/27</div>
       <h1>Yolu sen <em>seç.</em></h1>
-      <p>17 yaşında ilk imzanı at, iki yılda bir transfer kararı ver, 38 yaşında kupa dolabınla emekli ol.</p>
       ${shelf?`<div class="shelf" aria-label="Kazanabileceğin kupalardan bazıları">${shelf}</div>`:''}
     </div>
   </section>

@@ -204,6 +204,37 @@ td.n,th.n{text-align:right}
 .addrow{display:flex;gap:8px}
 .addrow input{flex:1;min-width:0}
 .err{color:var(--loss)}
+.tbadge{position:relative;flex:none;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.tbadge em{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 5px;border-radius:11px;background:var(--amber);color:var(--ink);font:800 13px/22px var(--cond);font-style:normal;text-align:center;box-shadow:0 0 0 2px var(--bg)}
+.cab .row{align-items:center}
+.cab .row.none .tbadge{filter:grayscale(1);opacity:.35}
+.chip{display:inline-flex;align-items:center;gap:5px}
+.chip .ticon{margin:-3px 0 -3px -4px}
+.journey{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px;margin-top:6px}
+.jstop{display:grid;justify-items:center;gap:2px}
+.jstop small{font:600 11px var(--cond);color:var(--muted);letter-spacing:.04em}
+.jarrow{color:var(--amber);font-weight:700;font-size:16px;margin-bottom:16px}
+.stint .stop{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.stint h2{font-size:28px}
+.srows{display:grid;margin-top:10px}
+.srow{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.srow:last-child{border-bottom:0}
+.srow b{font-family:var(--cond);min-width:58px}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;max-height:52vh;overflow:auto;background:var(--surface);border-top:1px solid var(--amber);border-radius:18px 18px 0 0;box-shadow:0 -14px 40px rgba(0,0,0,.55);
+  padding:0 max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(16px,env(safe-area-inset-left,0px));animation:sheetup .28s ease-out both}
+@keyframes sheetup{from{transform:translateY(40%)}to{transform:none}}
+.sheet.first{max-height:78vh}
+.sheet-in{max-width:620px;margin:0 auto;display:grid;gap:10px}
+.grab{width:42px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 0}
+.shtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.shtop h2{font-size:26px}
+.offers2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.offer2{display:grid;justify-items:start;align-content:start;gap:3px;text-align:left;background:var(--pitch);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--chalk);font:inherit;cursor:pointer;min-width:0}
+.offer2:hover,.offer2:focus-visible{border-color:var(--amber);outline:none}
+.o2name{font-family:var(--display);font-weight:900;font-size:20px;text-transform:uppercase;line-height:1.05;margin-top:4px;overflow-wrap:anywhere}
+.o2fee{font-family:var(--display);font-weight:800;font-size:26px;color:var(--amber);margin-top:4px;font-variant-numeric:tabular-nums}
+.o2lbl{font:600 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sheet #stay{padding:10px}
 .season.big{border-color:var(--gold);background:linear-gradient(180deg,var(--goldbg),var(--surface) 75%)}
 .moment{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);text-transform:uppercase;color:var(--gold);line-height:1;margin-bottom:10px;animation:pop .5s ease-out both}
 @keyframes pop{from{transform:scale(.9)}to{transform:none}}
@@ -552,6 +583,59 @@ function playSeason(){
   save();
 }
 
+/* ================= kupa ve ödül simgeleri ================= */
+const ICON_DEFS=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f2c14e"/><stop offset="1" stop-color="#a86f12"/></linearGradient>
+<linearGradient id="gSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c9d3da"/><stop offset="1" stop-color="#7d8a94"/></linearGradient>
+<linearGradient id="gBronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd9b0"/><stop offset=".5" stop-color="#d98c4a"/><stop offset="1" stop-color="#8a4a1c"/></linearGradient>
+<radialGradient id="gBall" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff6cf"/><stop offset=".5" stop-color="#f2c14e"/><stop offset="1" stop-color="#9a650f"/></radialGradient>
+</defs></svg>`;
+const LEAGUE_COL={'Premier League':'#7b2cbf','LaLiga':'#ff4b44','Serie A':'#1f6feb','Bundesliga':'#d20515','Ligue 1':'#2b59c3','Trendyol Süper Lig':'#e30a17','Eredivisie':'#ff7a00','Liga Portugal':'#00a650','Saudi Pro League':'#00965e','MLS':'#2d6cdf','Brasileirão Série A':'#16a34a','Liga Profesional':'#4aa3df'};
+const LEAGUE_NAMES=new Set(LEAGUES.map(l=>l.n)),CUP_NAMES=new Set(LEAGUES.map(l=>l.cup)),CONT_NAMES=new Set(Object.values(COMPS).flat().map(c=>c.n));
+function kindHint(t){t=t.replace(/<[^>]*>/g,'');return t.includes('Ballon')?'bdo':t.includes('Dünya Kupası Altın')?'wcball':t.includes('Dünya Kupası')?'wc':t.includes('Gol Kralı')?'boot':t.includes('Yashin')?'yashin':t.includes('Golden Boy')?'gboy':''}
+function trophyKind(name,cat){name=String(name||'');
+  if(cat==='bdo'||name==="Ballon d'Or")return 'bdo';
+  if(cat==='wc'||name==='FIFA Dünya Kupası')return 'wc';
+  if(cat==='wcball'||name==='Altın Top'||name.includes('Altın Top'))return 'wcball';
+  if(cat==='boot'||name.startsWith('Gol Kralı'))return 'boot';
+  if(cat==='gboy'||name==='Golden Boy')return 'gboy';
+  if(cat==='yashin'||name.startsWith('Yashin'))return 'yashin';
+  if(cat==='captain'||name.startsWith('Kaptan'))return 'captain';
+  if(cat==='cwc'||name.includes('Kulüpler Dünya'))return 'cwc';
+  if(name==='UEFA Şampiyonlar Ligi')return 'ucl';
+  if(name==='UEFA Avrupa Ligi')return 'uel';
+  if(name==='UEFA Konferans Ligi')return 'uecl';
+  if(cat==='natc'||(NATCUPS.has(name)&&name!=='FIFA Dünya Kupası'))return 'natc';
+  if(cat==='cont'||CONT_NAMES.has(name))return 'cont';
+  if(cat==='league'||LEAGUE_NAMES.has(name))return 'league';
+  return 'cup';
+}
+const KIND_BG={bdo:'#3a2c0b',wc:'#123a26',wcball:'#3a2c0b',boot:'#3a2a10',gboy:'#2c1f45',yashin:'#10324a',captain:'#3d3410',cwc:'#3a2c0b',ucl:'#14244a',uel:'#3d2410',uecl:'#0f3b2a',natc:'#13294a',cont:'#3a2c0b',league:'#1d2b3a',cup:'#2a2440'};
+function cupPath(fill,big){return `<path d="M13 6h14v8a7 7 0 0 1-14 0z" fill="${fill}"/>
+  ${big?`<path d="M13 8c-7-2-9 4-6 7s6 2 6 2M27 8c7-2 9 4 6 7s-6 2-6 2" fill="none" stroke="${fill}" stroke-width="2.6"/>`:`<path d="M13 8H9a4 4 0 0 0 4 7M27 8h4a4 4 0 0 1-4 7" fill="none" stroke="${fill}" stroke-width="2"/>`}
+  <rect x="18.5" y="20" width="3" height="7" fill="${fill}"/><rect x="14" y="27" width="12" height="3.5" rx="1" fill="${fill}"/><rect x="12" y="30.5" width="16" height="3.5" rx="1" fill="${fill}"/>`}
+function trophyIcon(kind,size,lgName){const S=size||36;let g='';
+  switch(kind){
+    case 'bdo':case 'wcball':g=`<circle cx="20" cy="19" r="13" fill="url(#gBall)"/><path d="M20 12l5 3.6-1.9 5.9h-6.2L15 15.6z" fill="#6b4508" opacity=".85"/><path d="M20 12V6.5M25 15.6l5-2M23.1 21.5l3.3 4.6M16.9 21.5l-3.3 4.6M15 15.6l-5-2" stroke="#6b4508" stroke-width="1.3" opacity=".7"/>${kind==='wcball'?'<rect x="12" y="33" width="16" height="3" rx="1.5" fill="#16a34a"/>':'<rect x="14" y="33" width="12" height="3" rx="1.5" fill="#c48a1c"/>'}`;break;
+    case 'wc':g=`<path d="M20 4c6 0 9 4 8 9-1 5-5 7-5 11l1 4h-8l1-4c0-4-4-6-5-11-1-5 2-9 8-9z" fill="url(#gGold)"/><path d="M15 9c3 2 7 2 10 0" stroke="#a86f12" stroke-width="1.2" fill="none"/><rect x="14" y="28" width="12" height="3" fill="#16a34a"/><rect x="13" y="31" width="14" height="4" rx="1" fill="url(#gGold)"/>`;break;
+    case 'ucl':g=cupPath('url(#gSilver)',1)+'<circle cx="20" cy="12" r="2.6" fill="#1f3c88"/>';break;
+    case 'uel':g=cupPath('url(#gSilver)')+'<rect x="13" y="11" width="14" height="2.4" fill="#ff7a00"/>';break;
+    case 'uecl':g=cupPath('url(#gSilver)')+'<rect x="13" y="11" width="14" height="2.4" fill="#22c55e"/>';break;
+    case 'cont':case 'cwc':g=cupPath('url(#gGold)',kind==='cwc')+(kind==='cwc'?'<circle cx="20" cy="11" r="3" fill="#1f6feb"/>':'');break;
+    case 'natc':g=cupPath('url(#gGold)')+'<rect x="13" y="11" width="14" height="2.4" fill="#1f6feb"/>';break;
+    case 'league':{const c=LEAGUE_COL[lgName]||'#1f9d74';g=`<path d="M20 4l13 4v10c0 9-6 14-13 17-7-3-13-8-13-17V8z" fill="${c}"/><path d="M20 4l13 4v10c0 9-6 14-13 17z" fill="#000" opacity=".15"/><path d="M20 11l2.2 4.6 5 .6-3.7 3.4 1 5-4.5-2.5-4.5 2.5 1-5-3.7-3.4 5-.6z" fill="url(#gGold)"/>`;break}
+    case 'cup':g=cupPath('url(#gBronze)')+'<path d="M15 28l-3 7M25 28l3 7" stroke="#1f6feb" stroke-width="2"/>';break;
+    case 'boot':g=`<path d="M10 8h10v12c4 1 10 2 12 6 1 3-1 5-4 5H10c-2 0-3-1-3-3z" fill="url(#gGold)"/><path d="M10 24h22" stroke="#a86f12" stroke-width="1.4"/><circle cx="12" cy="33" r="1.6" fill="#a86f12"/><circle cx="18" cy="33" r="1.6" fill="#a86f12"/><circle cx="24" cy="33" r="1.6" fill="#a86f12"/>`;break;
+    case 'gboy':g=`<path d="M20 4l4.5 9.3 10.2 1.4-7.4 7.1 1.8 10.1L20 27l-9.1 4.9 1.8-10.1-7.4-7.1 10.2-1.4z" fill="url(#gGold)"/><circle cx="20" cy="18" r="4" fill="#7c3aed"/>`;break;
+    case 'yashin':g=`<path d="M12 33V18c0-2 3-2 3 0v-8c0-2 3-2 3 0V8c0-2 3-2 3 0v2c0-2 3-2 3 0v9c1-3 4-4 5-2l-3 9c-1 3-3 7-7 7z" fill="#22c55e"/><rect x="11" y="30" width="15" height="5" rx="1.5" fill="#0b7a3a"/>`;break;
+    case 'captain':g=`<rect x="7" y="12" width="26" height="16" rx="4" fill="#facc15"/><rect x="7" y="12" width="26" height="4" fill="#eab308"/><text x="20" y="26" text-anchor="middle" font-family="Big Shoulders Display,Impact,sans-serif" font-weight="900" font-size="13" fill="#1b1305">C</text>`;break;
+  }
+  return `<svg class="ticon" width="${S}" height="${S}" viewBox="0 0 40 40" aria-hidden="true">${g}</svg>`;
+}
+function tbadge(kind,count,lgName){return `<span class="tbadge" style="background:${KIND_BG[kind]||'#1d2b3a'}">${trophyIcon(kind,46,lgName)}${count>1?`<em>${count}</em>`:''}</span>`}
+function chipHtml(x,nat){const k=trophyKind(x);return `<span class="chip">${trophyIcon(k,18,x)}${NATCUPS.has(x)||k==='wcball'?flag(nat)+' ':''}${esc(x)}</span>`}
+function journeyHtml(Q){const st=[];Q.seasons.forEach(s=>{const c=st[st.length-1];if(c&&c.club===s.club){c.to=s.endY;c.n++}else st.push({club:s.club,from:s.endY-1,to:s.endY,n:1})});
+  return `<div class="journey">${st.map((c,i)=>`${i?'<span class="jarrow" aria-hidden="true">→</span>':''}<span class="jstop">${crest(c.club,32)}<small>${String(c.from).slice(2)}–${String(c.to).slice(2)}</small></span>`).join('')}</div>`}
 /* ================= ekranlar ================= */
 function coverSvg(){
   const W=800,H=360,hz=196,tw=250,bw=980;
@@ -655,6 +739,7 @@ function renderArchive(){
   window.scrollTo(0,0);
 }
 function renderStart(){
+  if(typeof closeSheet==='function')closeSheet();
   const saved=load();
   const nats=NATIONS.map(n=>`<option${n.n==='Türkiye'?' selected':''}>${esc(n.n)}</option>`).join('');
   const groups={};LEAGUES.forEach(l=>{(groups[l.c]=groups[l.c]||[]).push(l)});
@@ -722,11 +807,36 @@ function bigMoment(s){
   if(s.rank===1)return s.lgName+' şampiyonu!';
   return null;
 }
+function seasonCardHtml(s,def){const h=bigMoment(s);return `<div class="card season${h?' big':''}">
+      ${h?`<div class="moment">${esc(h)}</div>`:''}
+      <div class="shead"><h2>${s.label}</h2><span class="eyebrow cl">${crest(s.club,20)}${esc(s.club)}</span></div>
+      <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}${s.injured?' · sakatlık':''}</div>
+      <div class="sdet">${seasonDetail(s)}</div>
+      ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>chipHtml(x,P.nat)).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${x==='Takım kaptanı oldun'?trophyIcon('captain',18):''}${esc(x)}</span>`).join('')}</div>`:''}
+    </div>`}
+function stintHtml(def){
+  const club=P.team.n,ss=[];for(let i=P.seasons.length-1;i>=0&&P.seasons[i].club===club;i--)ss.unshift(P.seasons[i]);
+  const sum=k=>ss.reduce((a,x)=>a+x[k],0),av=ss.reduce((a,x)=>a+x.avg,0)/Math.max(1,ss.length),trs=ss.flatMap(x=>x.trophies);
+  return `<section class="col">
+    <div class="card stint">
+      <div class="stop">${crest(club,46)}<div style="min-width:0"><div class="eyebrow">${flag(P.nat)} ${esc(P.name)} · ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div><h2>${esc(club)}'de ${ss.length} sezon</h2></div></div>
+      <div class="tiles">
+        <div class="tile"><b>${sum('apps')}</b><span>Maç</span></div>
+        <div class="tile"><b>${def?sum('cs'):sum('goals')}</b><span>${def?'Gol yemeden':'Gol'}</span></div>
+        <div class="tile"><b>${def?sum('goals'):sum('assists')}</b><span>${def?'Gol':'Asist'}</span></div>
+        <div class="tile"><b>${av.toFixed(1).replace('.',',')}</b><span>Ort. puan</span></div>
+      </div>
+      <div class="srows">${ss.map(x=>`<div class="srow"><b>${x.label}</b><span>${x.apps} maç · ${def?x.cs+' gol yemeden':x.goals+' gol · '+x.assists+' asist'} · ${x.rank===1?'<span class="won">lig şampiyonu</span>':'lig '+x.rank+'.'}${x.bdo&&x.bdo<=10?" · Ballon d'Or "+x.bdo+'.':''}</span></div>`).join('')}</div>
+      ${trs.length?`<div class="chips">${trs.map(x=>chipHtml(x,P.nat)).join('')}</div>`:'<p class="note" style="margin:8px 0 0">Bu kulüpte kupa kazanamadın.</p>'}
+    </div>
+  </section>`}
 function renderGame(){
   if(P.done)return renderEnd();
-  const t=P.team?teamOf(P.team.n,P.team.lg):null,l=t?LG[t.lg]:null,tt=totals();
-  const n=P.seasons.length,Y=2026+n,s=P.seasons[n-1];
+  closeSheet();
+  const t=P.team?teamOf(P.team.n,P.team.lg):null,tt=totals();
+  const n=P.seasons.length,Y=2026+n;
   const def=!(POS[P.pos].att||P.pos==='MO');
+  if(t&&OFFERS){$('#app').innerHTML=stintHtml(def);renderOffers();return}
   $('#app').innerHTML=`<section class="col">
     <div class="pcard">
       <div class="prow">
@@ -744,15 +854,9 @@ function renderGame(){
       <div class="btns">
         <button class="btn primary" id="play">${Y}/${String(Y+1).slice(2)} sezonunu oyna</button>
         <button class="btn" id="fast">Transfere kadar oyna</button>
-      </div>`:''}
+      </div>`:'<p class="note" style="margin:0">17 yaşındasın. Aşağıdan ilk kulübünü seç.</p>'}
     </div>
-    ${P.seasons.slice(LASTN<0?Math.max(0,n-1):Math.min(LASTN,n-1)).reverse().map(s=>{const h=bigMoment(s);return `<div class="card season${h?' big':''}">
-      ${h?`<div class="moment">${esc(h)}</div>`:''}
-      <div class="shead"><h2>${s.label}</h2><span class="eyebrow cl">${crest(s.club,20)}${esc(s.club)}</span></div>
-      <div class="sline">${s.apps} maç · ${def?s.cs+' gol yemeden':s.goals+' gol · '+s.assists+' asist'} · ${s.rank===1?'Lig şampiyonu':'Lig '+s.rank+'.'}${s.bdo&&s.bdo>1?" · Ballon d'Or "+s.bdo+'.':''}${s.injured?' · sakatlık':''}</div>
-      <div class="sdet">${seasonDetail(s)}</div>
-      ${s.trophies.length||(s.miles||[]).length?`<div class="chips">${s.trophies.map(x=>`<span class="chip">${NATCUPS.has(x)?flag(P.nat)+' ':''}${esc(x)}</span>`).join('')}${(s.miles||[]).map(x=>`<span class="chip g">${esc(x)}</span>`).join('')}</div>`:''}
-    </div>`}).join('')}
+    ${P.seasons.slice(LASTN<0?Math.max(0,n-1):Math.min(LASTN,n-1)).reverse().map(s=>seasonCardHtml(s,def)).join('')}
     <button class="btn link" id="reset">Yeni kariyer</button>
   </section>`;
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{P.focus=b.dataset.f;save();renderGame()});
@@ -765,32 +869,32 @@ function renderGame(){
   };
   if(OFFERS)renderOffers();
 }
-
+function closeSheet(){document.querySelectorAll('.overlay,.sheet').forEach(o=>o.remove());document.body.style.paddingBottom=''}
 function renderOffers(){
-  const first=!P.team;
-  const ov=document.createElement('div');
-  ov.className='overlay';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
-  ov.innerHTML=`<div class="win col">
-    <h2>${first?'İlk kulübünü seç':'Transfer dönemi'}</h2>
-    <div class="offers">${OFFERS.map((o,i)=>`<button class="offer" data-pick="${i}">
-      ${crest(o.n,64)}<span class="oname">${esc(o.n)}</span>
-      <span class="meta">${esc(LG[o.lg].n)}</span>
-      <span class="ofee"><small>Transfer bedeli</small>${eur(o.fee)}</span>
+  closeSheet();
+  const first=!P.team,Y=2026+P.seasons.length;
+  const sh=document.createElement('div');
+  sh.className='sheet'+(first?' first':'');sh.setAttribute('role','dialog');sh.setAttribute('aria-label',first?'İlk kulübünü seç':'Transfer teklifleri');
+  sh.innerHTML=`<div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">Yaz ${Y}</span></div>
+    <div class="offers2">${OFFERS.map((o,i)=>`<button class="offer2" data-pick="${i}">
+      ${crest(o.n,44)}<span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span>
+      <span class="o2fee">${eur(o.fee)}</span><span class="o2lbl">Transfer bedeli</span>
     </button>`).join('')}</div>
-    ${first?'':`<div class="recap"><div class="recaphead">${crest(P.team.n,18)}<span>${esc(P.team.n)} · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</span></div>${P.seasons.slice(-2).map(s=>`<div class="recaprow"><b>${s.label}</b><span>${s.club!==P.team.n?esc(s.club)+' · ':''}${s.apps} maç · ${POS[P.pos].att||P.pos==='MO'?s.goals+' gol · '+s.assists+' asist':s.cs+' gol yemeden'} · ${s.rank===1?'lig şampiyonu':'lig '+s.rank+'.'} · puan ${s.avg.toFixed(1).replace('.',',')}${s.trophies.length?' · '+s.trophies.length+' kupa':''}</span></div>`).join('')}</div>`}
     ${first?'':`<button class="btn" id="stay">${esc(P.team.n)} kulübünde kal</button>`}
   </div>`;
-  document.body.appendChild(ov);
-  const Y=2026+P.seasons.length;
-  ov.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+  document.body.appendChild(sh);
+  const fit=()=>{document.body.style.paddingBottom=(sh.offsetHeight+16)+'px'};fit();
+  ov=sh;
+  sh.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
     const o=OFFERS[+b.dataset.pick];
     P.moves.push({y:Y,from:P.team?P.team.n:null,to:o.n,fee:o.fee,start:o.start});
-    P.team={n:o.n,lg:o.lg};OFFERS=null;save();ov.remove();renderGame();window.scrollTo(0,0);
+    P.team={n:o.n,lg:o.lg};OFFERS=null;LASTN=-1;save();closeSheet();renderGame();window.scrollTo(0,0);
   });
-  if($('#stay'))$('#stay').onclick=()=>{OFFERS=null;save();ov.remove();renderGame()};
-  ov.querySelector('[data-pick]').focus({preventScroll:true});
+  if(sh.querySelector('#stay'))sh.querySelector('#stay').onclick=()=>{OFFERS=null;LASTN=-1;save();closeSheet();renderGame();window.scrollTo(0,0)};
 }
-
+let ov=null;
 /* ================= kariyer sonu ================= */
 function renderEnd(arch,archId,mode){
   const Q=arch||P,live=!arch;mode=mode||(live?'live':'own');
@@ -804,21 +908,21 @@ function renderEnd(arch,archId,mode){
   const pts=bdo.length*10+wc*9+ucl*4+T.filter(x=>x.cat==='natc').length*4+T.filter(x=>x.cat==='league').length*1.5+tt.goals/40;
   const HOF_KEY='futbol-kariyer-yolu.hof';
   const legacy=pts>=70?'Tüm zamanların en iyisi':pts>=40?'Futbol efsanesi':pts>=20?'Dünya yıldızı':pts>=9?'Kulüp efsanesi':'Saygın bir profesyonel';
-  const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row"><b>${g[k].length}</b><div><strong>${NATCUPS.has(k)?flag(Q.nat)+' ':''}${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
+  const rows=g=>Object.keys(g).map(k=>{const cl=[...new Set(g[k].map(x=>x.club).filter(c=>c&&teamExists(c)))];return `<div class="row">${tbadge(trophyKind(k,g[k][0].cat),g[k].length,k)}<div><strong>${NATCUPS.has(k)?flag(Q.nat)+' ':''}${esc(k)}</strong><small>${g[k].map(x=>x.year).join(', ')}</small>${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`}).join('');
   const clubs=[...new Set(Q.seasons.map(s=>s.club))];
   const wcs=T.filter(x=>x.cat==='wc');
   const wcRuns=Q.seasons.filter(s=>s.tourn&&s.tourn.wc);
   const ORD=['ŞAMPİYON','Finalde kaybetti','Yarı finalde elendi','Çeyrek finalde elendi','Son 16 turunda elendi','Son 32 turunda elendi','Grupta elendi','Elemelerde kaldı'];
   const bestWc=wcRuns.slice().sort((a,b)=>ORD.indexOf(a.tourn.txt)-ORD.indexOf(b.tourn.txt))[0];
   const irow=(title,list,empty,extra,noYears)=>{const cl=[...new Set(list.map(x=>x.club).filter(c=>c&&teamExists(c)))];
-    return `<div class="row${list.length?'':' none'}"><b>${list.length}</b><div><strong>${title}</strong>${list.length&&noYears?'':`<small>${list.length?list.map(x=>x.year).join(', '):esc(empty)}</small>`}${extra||''}${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`};
+    return `<div class="row${list.length?'':' none'}">${tbadge(trophyKind('',(list[0]||{}).cat||kindHint(title)),list.length)}<div><strong>${title}</strong>${list.length&&noYears?'':`<small>${list.length?list.map(x=>x.year).join(', '):esc(empty)}</small>`}${extra||''}${cl.length?`<span class="crests">${cl.map(c=>crest(c,22)).join('')}</span>`:''}</div></div>`};
   const wcList=wcRuns.length?`<small class="runs">${wcRuns.map(s=>s.endY+': '+(s.tourn.won?'Şampiyon':s.tourn.txt)).join(' · ')}</small>`:'';
   $('#app').innerHTML=`<section class="col">
     <div class="endhero">
       <div class="eyebrow">${live?'Kariyer bitti · 38 yaş':mode==='own'?'Kariyer arşivi':'Arkadaşının kariyeri'} · ${flag(Q.nat)} ${esc(Q.nat)} · ${esc(POS[Q.pos].n)}</div>
       <h1>${esc(Q.name)}</h1>
       <div class="legacy">${legacy}</div>
-      <div class="crests big">${clubs.map(c=>crest(c,34)).join('')}</div>
+      ${journeyHtml(Q)}
     </div>
     <div class="tiles">
       <div class="tile"><b>${num(tt.apps)}</b><span>Maç</span></div>
@@ -834,7 +938,7 @@ function renderEnd(arch,archId,mode){
       ${Q.pos==='KL'||T.some(x=>x.cat==='yashin')?irow('Yashin Ödülü (yılın kalecisi)',T.filter(x=>x.cat==='yashin'),'Kazanılmadı'):''}
       ${T.some(x=>x.cat==='gboy')?irow('Golden Boy (yılın genç oyuncusu)',T.filter(x=>x.cat==='gboy'),''):''}
       ${T.some(x=>x.cat==='wcball')?irow(flag(Q.nat)+' Dünya Kupası Altın Top',T.filter(x=>x.cat==='wcball'),''):''}
-      ${(Q.captains||[]).length?`<div class="row"><b>${Q.captains.length}</b><div><strong>Kaptanlık</strong><small>${Q.captains.map(esc).join(', ')}</small><span class="crests">${Q.captains.map(c=>crest(c,22)).join('')}</span></div></div>`:''}
+      ${(Q.captains||[]).length?`<div class="row">${tbadge('captain',Q.captains.length)}<div><strong>Kaptanlık</strong><small>${Q.captains.map(esc).join(', ')}</small><span class="crests">${Q.captains.map(c=>crest(c,22)).join('')}</span></div></div>`:''}
     </div>
     <h2 class="sh">Kupalar (${team.length})</h2>
     ${team.length?`<div class="cab">${rows(group(team))}</div>`:'<p class="note">Kupa kazanılmadı.</p>'}
@@ -853,6 +957,7 @@ function renderEnd(arch,archId,mode){
   window.scrollTo(0,0);
 }
 
+document.body.insertAdjacentHTML('afterbegin',ICON_DEFS);
 renderStart();
 (function(){const h=location.hash;if(h&&h.startsWith('#k=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}openFriendCode(h)}})();
 if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{LOGOS=d||{};if(P){document.querySelectorAll('.overlay').forEach(o=>o.remove());renderGame()}}).catch(()=>{});

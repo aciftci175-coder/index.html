@@ -240,30 +240,50 @@ td.n,th.n{text-align:right}
 .o2name{font-family:var(--display);font-weight:900;font-size:20px;text-transform:uppercase;line-height:1.05;margin-top:4px;overflow-wrap:anywhere}
 .o2fee{font-family:var(--display);font-weight:800;font-size:26px;color:var(--amber);margin-top:4px;font-variant-numeric:tabular-nums}
 .o2lbl{font:600 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.sheet #stay{padding:9px;font-size:14px}
-.sheet{max-height:46vh}
-.sheet-in{gap:8px}
-.shtop h2{font-size:22px}
-.offers2{grid-template-columns:1fr;gap:6px}
-.offer2{display:flex;align-items:center;gap:10px;padding:8px 12px}
+.sheet #stay{padding:12px;font-size:15px;flex:none}
+.sheet{max-height:none;display:flex;flex-direction:column}
+.sheet-in{gap:10px;display:flex;flex-direction:column;flex:1;width:100%}
+.shtop h2{font-size:26px}
+.offers2{grid-template-columns:1fr;gap:8px;flex:1;grid-auto-rows:1fr}
+.offer2{display:flex;align-items:center;gap:12px;padding:10px 14px}
 .o2txt{display:grid;min-width:0;flex:1}
-.o2txt .o2name{font-size:17px;margin:0}
-.o2txt .meta{font-size:12px}
-.offer2 .o2fee{font-size:22px;margin:0}
-.stint{padding:12px 14px}
-.stint .stop{margin-bottom:8px;gap:10px}
-.stint h2{font-size:21px}
-.stint .eyebrow{font-size:10.5px}
-.stint .tiles{gap:6px}
-.stint .tile{padding:6px 4px}
-.stint .tile b{font-size:22px}
-.stint .tile span{font-size:9.5px}
-.stint .srows{margin-top:6px}
-.stint .srow{padding:5px 0;font-size:13px;gap:8px}
-.stint .smom{font-size:13px}
-.cdet{font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px}
-.stint .chips{margin-top:6px}
-.stint .chip{font-size:11px;padding:3px 8px}
+.o2txt .o2name{font-size:21px;margin:0}
+.o2txt .meta{font-size:13.5px}
+.offer2 .o2fee{font-size:30px;margin:0}
+.stint{padding:14px 16px}
+.stint .stop{margin-bottom:10px;gap:12px}
+.stint h2{font-size:26px}
+.stint .eyebrow{font-size:11.5px}
+.stint .tiles{gap:8px}
+.stint .tile{padding:9px 4px}
+.stint .tile b{font-size:28px}
+.stint .tile span{font-size:10.5px}
+.stint .srows{margin-top:8px}
+.stint .srow{padding:7px 0;font-size:15px;gap:10px}
+.stint .smom{font-size:15px}
+.cdet{font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:3px}
+.stint .chips{margin-top:8px}
+.stint .chip{font-size:12px;padding:4px 9px}
+body.sheet-open .wrap{padding-bottom:0}
+body.tight .top{padding-bottom:8px;margin-bottom:10px}
+body.tight .brand{font-size:24px}
+body.tight .stint{padding:10px 12px}
+body.tight .stint .tile{padding:5px 4px}
+body.tight .stint .tile b{font-size:22px}
+body.tight .stint h2{font-size:21px}
+body.tight .stint .srow{padding:4px 0;font-size:13.5px}
+body.tight .cdet{font-size:11.5px}
+body.tight .sheet-in{gap:6px}
+body.tight .offer2{padding:6px 12px}
+body.tight .offer2 .o2fee{font-size:24px}
+body.tight .o2txt .o2name{font-size:18px}
+body.tight .shtop h2{font-size:21px}
+body.tight .sheet #stay{padding:8px}
+body.tighter .top{display:none}
+body.tighter .stint .stop{margin-bottom:6px}
+body.tighter .stint .stop .crest{width:32px;height:37px}
+body.tighter .grab{margin-top:5px}
+body.tighter .cdet{line-height:1.25}
 .cover.hero2{max-width:1180px;margin:0 auto;width:100%;position:relative;border-radius:16px}
 .poster{position:relative;overflow:hidden;background:var(--bg)}
 .poster .pbg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(26px) brightness(.36) saturate(1.2)}
@@ -957,7 +977,7 @@ function stintHtml(def){
   const sum=k=>ss.reduce((a,x)=>a+x[k],0),av=ss.reduce((a,x)=>a+x.avg,0)/Math.max(1,ss.length),trs=ss.flatMap(x=>x.trophies);
   return `<section class="col">
     <div class="card stint">
-      <div class="stop">${crest(club,34)}<div style="min-width:0"><h2>${esc(club)}'de ${ss.length} sezon</h2><div class="eyebrow">${flag(P.nat)} ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div></div></div>
+      <div class="stop">${crest(club,44)}<div style="min-width:0"><h2>${esc(club)}'de ${ss.length} sezon</h2><div class="eyebrow">${flag(P.nat)} ${P.age} yaş · güç ${Math.round(P.ovr)} · değer ${eur(mv(P.ovr,P.age))}</div></div></div>
       <div class="tiles">
         <div class="tile"><b>${sum('apps')}</b><span>Maç</span></div>
         <div class="tile"><b>${def?sum('cs'):sum('goals')}</b><span>${def?'Gol yemeden':'Gol'}</span></div>
@@ -1004,7 +1024,7 @@ function renderGame(){
   if(OFFERS)renderOffers();
 }
 function autoPlay(){LASTN=P.seasons.length;do{playSeason()}while(!OFFERS&&!P.done);renderGame()}
-function closeSheet(){document.querySelectorAll('.overlay,.sheet').forEach(o=>o.remove());document.body.style.paddingBottom=''}
+function closeSheet(){document.querySelectorAll('.overlay,.sheet').forEach(o=>o.remove());document.body.style.paddingBottom='';document.body.classList.remove('tight','tighter','sheet-open')}
 function renderOffers(){
   closeSheet();
   const first=!P.team,Y=2026+P.seasons.length;
@@ -1014,13 +1034,19 @@ function renderOffers(){
     <div class="grab" aria-hidden="true"></div>
     <div class="shtop"><h2>${first?'İlk kulübünü seç':'Transfer teklifleri'}</h2><span class="eyebrow">Yaz ${Y} · bedel</span></div>
     <div class="offers2">${OFFERS.map((o,i)=>`<button class="offer2" data-pick="${i}">
-      ${crest(o.n,34)}<span class="o2txt"><span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span></span>
+      ${crest(o.n,46)}<span class="o2txt"><span class="o2name">${esc(o.n)}</span><span class="meta">${esc(LG[o.lg].n)}</span></span>
       <span class="o2fee">${eur(o.fee)}</span>
     </button>`).join('')}</div>
     ${first?'':`<button class="btn" id="stay">${esc(P.team.n)} kulübünde kal</button>`}
   </div>`;
   document.body.appendChild(sh);
-  const fit=()=>{document.body.style.paddingBottom=(sh.offsetHeight+16)+'px'};fit();
+  const fit=()=>{sh.style.minHeight='';const st=document.querySelector('.stint');document.body.classList.remove('tight','tighter');
+    if(st){const top=()=>st.getBoundingClientRect().bottom+window.scrollY;
+      if(top()+sh.offsetHeight+10>window.innerHeight)document.body.classList.add('tight');
+      if(top()+sh.offsetHeight+10>window.innerHeight)document.body.classList.add('tighter');
+      const gap=window.innerHeight-top()-10;if(gap>sh.offsetHeight)sh.style.minHeight=gap+'px'}
+    document.body.classList.add('sheet-open');document.body.style.paddingBottom=sh.offsetHeight+'px'};
+  fit();setTimeout(fit,350);window.onresize=fit;
   ov=sh;
   sh.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
     const o=OFFERS[+b.dataset.pick];
@@ -1103,7 +1129,7 @@ if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{L
 <script>
 /* Uygulama güncelleme: her açılışta ve uygulamaya dönüldüğünde yeni sürümü kontrol et */
 (function(){
-  var BUILD='20261126130717',busy=false;
+  var BUILD='20261126131326',busy=false;
   function reloadNow(){if(busy)return;busy=true;try{sessionStorage.setItem('fky.autocont','1')}catch(e){}location.reload()}
   function check(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(v){

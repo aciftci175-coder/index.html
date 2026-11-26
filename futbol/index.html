@@ -239,6 +239,44 @@ td.n,th.n{text-align:right}
 .o2fee{font-family:var(--display);font-weight:800;font-size:26px;color:var(--amber);margin-top:4px;font-variant-numeric:tabular-nums}
 .o2lbl{font:600 10.5px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .sheet #stay{padding:10px}
+.shelf{display:flex;align-items:flex-end;gap:10px;margin-top:10px;height:58px}
+.shelf img{height:100%;width:auto;max-width:64px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+.shelf img:nth-child(2){height:78%}.shelf img:nth-child(5),.shelf img:nth-child(6){height:86%}
+.stats4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.stats4 div{padding:12px 6px;text-align:center;border-left:1px solid var(--line)}
+.stats4 div:first-child{border-left:0}
+.stats4 b{display:block;font-family:var(--display);font-weight:900;font-size:28px;color:var(--amber);line-height:1;font-variant-numeric:tabular-nums}
+.stats4 span{font:600 11px var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.resume{display:grid;gap:12px;border-color:var(--amber)}
+.rrow{display:flex;align-items:center;gap:12px}
+.rov{font-family:var(--display);font-weight:900;font-size:44px;color:var(--amber);line-height:.9}
+.rrow strong{display:block;font-family:var(--display);font-size:22px;text-transform:uppercase;line-height:1.1}
+.rrow small{color:var(--muted)}
+.newc{display:grid;gap:14px}
+.nhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.nhead h2{font-size:30px}
+.nform{display:grid;gap:14px}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.frow2{grid-template-columns:1fr}}
+.selwrap{position:relative;display:block}
+.selwrap select{width:100%;padding-left:42px}
+.selflag{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none}
+.posf{border:0;margin:0;padding:0;display:grid;gap:6px}
+.posf legend{font-family:var(--cond);text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--muted);font-weight:600;padding:0;margin-bottom:6px}
+.posgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+@media(max-width:560px){.posgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.posgrid button{display:grid;justify-items:center;gap:2px;padding:10px 4px;border-radius:10px;border:1px solid var(--line);background:var(--pitch);color:var(--chalk);cursor:pointer;font:inherit}
+.posgrid button b{font-family:var(--display);font-weight:900;font-size:24px;line-height:1}
+.posgrid button span{font-size:11px;color:var(--muted);text-align:center;line-height:1.15}
+.posgrid button[aria-checked="true"]{border-color:var(--amber);background:var(--goldbg)}
+.posgrid button[aria-checked="true"] b{color:var(--amber)}
+.posgrid button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.lgprev{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:var(--pitch);border:1px dashed var(--line);min-height:54px}
+.lgprev span{margin-left:6px;min-width:0}
+.lgprev strong{display:block;font-family:var(--cond);text-transform:uppercase;letter-spacing:.04em}
+.lgprev small{color:var(--muted)}
+.btn.big{padding:16px;font-size:18px}
+.col.credit{margin:4px auto 0}
 .season.big{border-color:var(--gold);background:linear-gradient(180deg,var(--goldbg),var(--surface) 75%)}
 .moment{font-family:var(--display);font-weight:900;font-size:clamp(26px,6vw,38px);text-transform:uppercase;color:var(--gold);line-height:1;margin-bottom:10px;animation:pop .5s ease-out both}
 @keyframes pop{from{transform:scale(.9)}to{transform:none}}
@@ -747,43 +785,66 @@ function renderArchive(){
   document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const x=a.find(y=>y.id===b.dataset.k);renderEnd(x.P,x.id,x.friend?'friend':'own')});
   window.scrollTo(0,0);
 }
+const POS_SHORT={ST:'ST',KAN:'KAN',OOS:'10',MO:'MO',STP:'DEF',KL:'KL'};
+function leaguePreview(id){const l=LG[id];const top=[...l.teams].sort((a,b)=>b.p-a.p).slice(0,5);
+  return `${top.map(t=>crest(t.n,30)).join('')}<span><strong>${esc(l.n)}</strong><small>${esc(l.c)} · ${l.teams.length} kulüp${l.tier===2?' · 2. lig':''}</small></span>`}
+function shelfImgs(){return ['FIFA Dünya Kupası',"Ballon d'Or",'UEFA Şampiyonlar Ligi','Avrupa Şampiyonası (EURO)','Trendyol Süper Lig','Premier League'].map(n=>TROPHY_IMG[TMAP[n]]?`<img src="${TROPHY_IMG[TMAP[n]]}" alt="${esc(n)}" title="${esc(n)}">`:'').join('')}
 function renderStart(){
   if(typeof closeSheet==='function')closeSheet();
-  const saved=load();
+  const saved=load(),live=saved&&!saved.P.done?saved.P:null;
   const nats=NATIONS.map(n=>`<option${n.n==='Türkiye'?' selected':''}>${esc(n.n)}</option>`).join('');
   const groups={};LEAGUES.forEach(l=>{(groups[l.c]=groups[l.c]||[]).push(l)});
   const lgs=Object.keys(groups).map(c=>`<optgroup label="${esc(c)}">${groups[c].map(l=>`<option value="${l.id}"${l.id==='TUR'?' selected':''}>${esc(l.n)}</option>`).join('')}</optgroup>`).join('');
-  const poss=Object.keys(POS).map(k=>`<option value="${k}">${POS[k].n}</option>`).join('');
+  const shelf=shelfImgs();
+  const teams=LEAGUES.reduce((a,l)=>a+l.teams.length,0);
   $('#app').innerHTML=`<section class="cover col">
     ${coverSvg()}
     <div class="cover-text">
-      <div class="eyebrow">Sezon 2026/27 · 17 yaşındasın</div>
+      <div class="eyebrow">Futbol kariyer simülasyonu · Sezon 2026/27</div>
       <h1>Yolu sen <em>seç.</em></h1>
-      <p>55 lig, iki yılda bir transfer, 38 yaşına kadar Ballon d'Or ve Dünya Kupası peşinde.</p>
+      <p>17 yaşında ilk imzanı at, iki yılda bir transfer kararı ver, 38 yaşında kupa dolabınla emekli ol.</p>
+      ${shelf?`<div class="shelf" aria-label="Kazanabileceğin kupalardan bazıları">${shelf}</div>`:''}
     </div>
   </section>
-  <section class="col card" style="display:grid;gap:16px">
-    <h2 style="font-size:30px">Yeni kariyer</h2>
-    <form id="f" class="form">
-      <label>Ad soyad<input id="pname" value="Kerem Aydın" maxlength="28" autocomplete="off"></label>
-      <label>Uyruk<select id="pnat">${nats}</select></label>
-      <label>Mevki<select id="ppos">${poss}</select></label>
-      <label>Başlangıç ligi<select id="plg">${lgs}</select></label>
+  <section class="col stats4">
+    <div><b>${LEAGUES.length}</b><span>Lig</span></div><div><b>${teams}</b><span>Kulüp</span></div><div><b>22</b><span>Sezon</span></div><div><b>${Object.keys(TMAP).length}</b><span>Kupa ve ödül</span></div>
+  </section>
+  ${live?`<section class="col card resume">
+    <div class="eyebrow">Devam eden kariyer</div>
+    <div class="rrow">${live.team?crest(live.team.n,48):''}<div class="rov">${Math.round(live.ovr)}</div><div style="min-width:0;flex:1"><strong>${flag(live.nat)} ${esc(live.name)}</strong><small>${live.age} yaş · ${esc(POS[live.pos].n)}${live.team?' · '+esc(live.team.n):''} · ${live.seasons.length} sezon oynandı</small></div></div>
+    <button class="btn primary" id="cont">Kaldığın yerden devam et</button>
+  </section>`:''}
+  <section class="col card newc">
+    <div class="nhead"><h2>Yeni kariyer</h2>${live?'<small class="note">Yeni kariyer, devam edeni siler.</small>':''}</div>
+    <form id="f" class="nform">
+      <div class="frow2">
+        <label for="pname">Ad soyad<input id="pname" value="Kerem Aydın" maxlength="28" autocomplete="off"></label>
+        <label for="pnat">Uyruk<span class="selwrap"><span class="selflag" id="natflag">${flag('Türkiye')}</span><select id="pnat">${nats}</select></span></label>
+      </div>
+      <fieldset class="posf"><legend>Mevki</legend>
+        <div class="posgrid" role="radiogroup">${Object.keys(POS).map((k,i)=>`<button type="button" role="radio" aria-checked="${i===0}" data-pos="${k}"><b>${POS_SHORT[k]}</b><span>${POS[k].n}</span></button>`).join('')}</div>
+      </fieldset>
+      <label for="plg">Başlangıç ligi<select id="plg">${lgs}</select></label>
+      <div class="lgprev" id="lgprev">${leaguePreview('TUR')}</div>
+      <button class="btn primary big" id="go" type="submit">Kariyere başla <span aria-hidden="true">→</span></button>
     </form>
-    <div class="btns">
-      <button class="btn primary" id="go">Başla</button>
-      ${saved&&!saved.P.done?`<button class="btn" id="cont">Devam et (${esc(saved.P.name)}, ${saved.P.age})</button>`:''}
-    </div>
-  </section>${hofHtml()}`;
-  $('#go').onclick=()=>{
-    P=newCareer(($('#pname').value||'').trim()||'İsimsiz Yıldız',$('#pnat').value,$('#ppos').value);
-    OFFERS=startOffers($('#plg').value);renderGame();
+  </section>
+  ${hofHtml()}
+  <p class="col credit">Kulüp logoları: football-logos (luukhopman). Kupa çizimleri: Football Trophy Silhouettes, Amr Batheeb (@__iMory), CC BY-NC 4.0. Kulüp, kupa ve lig adları sahiplerine aittir; bu oyun resmi değildir.</p>`;
+  let pos='ST';
+  document.querySelectorAll('[data-pos]').forEach(b=>b.onclick=()=>{pos=b.dataset.pos;document.querySelectorAll('[data-pos]').forEach(x=>x.setAttribute('aria-checked',x===b))});
+  $('#pnat').onchange=e=>{$('#natflag').innerHTML=flag(e.target.value)};
+  $('#plg').onchange=e=>{$('#lgprev').innerHTML=leaguePreview(e.target.value)};
+  const start=()=>{
+    if(live){clearSave()}
+    P=newCareer(($('#pname').value||'').trim()||'İsimsiz Yıldız',$('#pnat').value,pos);
+    OFFERS=startOffers($('#plg').value);LASTN=-1;renderGame();window.scrollTo(0,0);
   };
-  $('#f').onsubmit=e=>{e.preventDefault();$('#go').click()};
+  $('#f').onsubmit=e=>{e.preventDefault();start()};
   if($('#openArch'))$('#openArch').onclick=()=>renderArchive();
   let ac=null;try{ac=sessionStorage.getItem('fky.autocont');sessionStorage.removeItem('fky.autocont')}catch(e){}
-  if(ac&&saved&&!saved.P.done){P=saved.P;OFFERS=saved.OFFERS;renderGame()}
-  if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame()};
+  if(ac&&live){P=saved.P;OFFERS=saved.OFFERS;renderGame()}
+  if($('#cont'))$('#cont').onclick=()=>{P=saved.P;OFFERS=saved.OFFERS;renderGame();window.scrollTo(0,0)};
 }
 
 function totals(Q){Q=Q||P;
@@ -969,15 +1030,15 @@ function renderEnd(arch,archId,mode){
 
 document.body.insertAdjacentHTML('afterbegin',ICON_DEFS);
 renderStart();
-if(!window.TROPHIES_INLINE)fetch('trophies.json').then(r=>r.ok?r.json():{}).then(d=>{TROPHY_IMG=d||{};if(P&&!P.done)renderGame();else if(P&&P.done)renderEnd()}).catch(()=>{});
+if(!window.TROPHIES_INLINE)fetch('trophies.json').then(r=>r.ok?r.json():{}).then(d=>{TROPHY_IMG=d||{};if(P&&!P.done)renderGame();else if(P&&P.done)renderEnd();else{const c=document.querySelector('.cover-text');if(c&&!c.querySelector('.shelf'))c.insertAdjacentHTML('beforeend',`<div class="shelf">${shelfImgs()}</div>`)}}).catch(()=>{});
 (function(){const h=location.hash;if(h&&h.startsWith('#k=')){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}openFriendCode(h)}})();
-if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{LOGOS=d||{};if(P){document.querySelectorAll('.overlay').forEach(o=>o.remove());renderGame()}}).catch(()=>{});
+if(!window.LOGOS_INLINE)fetch('logos.json').then(r=>r.ok?r.json():{}).then(d=>{LOGOS=d||{};if(!P&&$('#plg')&&$('#lgprev'))$('#lgprev').innerHTML=leaguePreview($('#plg').value);if(P){document.querySelectorAll('.overlay').forEach(o=>o.remove());renderGame()}}).catch(()=>{});
 </script>
 
 <script>
 /* Uygulama güncelleme: her açılışta ve uygulamaya dönüldüğünde yeni sürümü kontrol et */
 (function(){
-  var BUILD='20261126122028',busy=false;
+  var BUILD='20261126122445',busy=false;
   function reloadNow(){if(busy)return;busy=true;try{sessionStorage.setItem('fky.autocont','1')}catch(e){}location.reload()}
   function check(){
     fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(v){

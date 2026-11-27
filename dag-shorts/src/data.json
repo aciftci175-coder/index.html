@@ -1,0 +1,112 @@
+{
+ "intro": {
+  "text": "Türkiye'nin en yüksek 10 dağı! Birincisi tam bir efsane.",
+  "tts": "Türkiye'nin en yüksek on dağı! Birincisi tam bir efsane."
+ },
+ "mountains": [
+  {
+   "rank": 10,
+   "name": "Medetsiz",
+   "sub": "Bolkar Dağları",
+   "h": 3524,
+   "city": "Niğde",
+   "fact": "Toroslar'ın gizli devi",
+   "text": "10. sırada Bolkar Dağları'nın zirvesi Medetsiz: 3.524 metre.",
+   "tts": "Onuncu sırada Bolkar Dağları'nın zirvesi Medetsiz. Üç bin beş yüz yirmi dört metre."
+  },
+  {
+   "rank": 9,
+   "name": "Esence Dağı",
+   "sub": "Keşiş Dağı",
+   "h": 3549,
+   "city": "Erzincan",
+   "fact": "Fırat'ın kaynağına bakar",
+   "text": "9. sırada Erzincan'ın Esence Dağı: 3.549 metre.",
+   "tts": "Dokuzuncu sırada Erzincan'ın Esence Dağı. Üç bin beş yüz kırk dokuz metre."
+  },
+  {
+   "rank": 8,
+   "name": "Tendürek",
+   "sub": "Volkanik Dağ",
+   "h": 3584,
+   "city": "Ağrı – Van",
+   "fact": "Hâlâ buhar çıkaran uyuyan volkan",
+   "text": "8. sırada uyuyan volkan Tendürek: 3.584 metre.",
+   "tts": "Sekizinci sırada uyuyan volkan Tendürek. Üç bin beş yüz seksen dört metre."
+  },
+  {
+   "rank": 7,
+   "name": "Kızılkaya",
+   "sub": "Aladağlar",
+   "h": 3767,
+   "city": "Niğde – Adana",
+   "fact": "Dağcıların cenneti",
+   "text": "7. sırada Aladağlar'ın zirvesi Kızılkaya: 3.767 metre.",
+   "tts": "Yedinci sırada Aladağlar'ın zirvesi Kızılkaya. Üç bin yedi yüz altmış yedi metre."
+  },
+  {
+   "rank": 6,
+   "name": "Küçük Ağrı",
+   "sub": "Volkanik Dağ",
+   "h": 3896,
+   "city": "Iğdır",
+   "fact": "Büyük kardeşinin hemen yanında",
+   "text": "6. sırada Küçük Ağrı: 3.896 metre.",
+   "tts": "Altıncı sırada Küçük Ağrı. Üç bin sekiz yüz doksan altı metre."
+  },
+  {
+   "rank": 5,
+   "name": "Erciyes",
+   "sub": "Sönmüş Volkan",
+   "h": 3917,
+   "city": "Kayseri",
+   "fact": "Türkiye'nin kayak devi",
+   "text": "5. sırada Kayseri'nin simgesi Erciyes: 3.917 metre.",
+   "tts": "Beşinci sırada Kayseri'nin simgesi Erciyes. Üç bin dokuz yüz on yedi metre."
+  },
+  {
+   "rank": 4,
+   "name": "Kaçkar",
+   "sub": "Kaçkar Dağları",
+   "h": 3937,
+   "city": "Rize",
+   "fact": "Karadeniz'in çatısı",
+   "text": "4. sırada Karadeniz'in çatısı Kaçkar: 3.937 metre.",
+   "tts": "Dördüncü sırada Karadeniz'in çatısı Kaçkar. Üç bin dokuz yüz otuz yedi metre."
+  },
+  {
+   "rank": 3,
+   "name": "Süphan",
+   "sub": "Volkanik Dağ",
+   "h": 4058,
+   "city": "Bitlis",
+   "fact": "Van Gölü'ne yukarıdan bakar",
+   "text": "3. sırada Van Gölü'nün bekçisi Süphan: 4.058 metre.",
+   "tts": "Üçüncü sırada Van Gölü'nün bekçisi Süphan. Dört bin elli sekiz metre."
+  },
+  {
+   "rank": 2,
+   "name": "Uludoruk",
+   "sub": "Cilo Dağları",
+   "h": 4135,
+   "city": "Hakkari",
+   "fact": "Türkiye'nin en büyük buzulları",
+   "text": "2. sırada buzullarıyla ünlü Uludoruk: 4.135 metre.",
+   "tts": "İkinci sırada buzullarıyla ünlü Uludoruk. Dört bin yüz otuz beş metre."
+  },
+  {
+   "rank": 1,
+   "name": "Ağrı Dağı",
+   "sub": "Türkiye'nin Çatısı",
+   "h": 5137,
+   "city": "Ağrı – Iğdır",
+   "fact": "Nuh'un Gemisi efsanesi",
+   "text": "Ve 1 numara: Türkiye'nin çatısı Ağrı Dağı! Tam 5.137 metre!",
+   "tts": "Ve bir numara: Türkiye'nin çatısı Ağrı Dağı! Tam beş bin yüz otuz yedi metre!"
+  }
+ ],
+ "outro": {
+  "text": "Sen hangisine tırmanırdın? Yorumlara yaz!",
+  "tts": "Sen hangisine tırmanırdın? Yorumlara yaz!"
+ }
+}

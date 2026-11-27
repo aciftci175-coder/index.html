@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Türkiye'nin En Yüksek 10 Dağı</title>
+<style>
+@font-face{font-family:IDB;src:url(fonts/InterDisplay-Black.otf)}
+@font-face{font-family:IDX;src:url(fonts/InterDisplay-ExtraBold.otf)}
+@font-face{font-family:IDBo;src:url(fonts/InterDisplay-Bold.otf)}
+@font-face{font-family:ISB;src:url(fonts/Inter-SemiBold.otf)}
+:root{--red:#E30A17;--yel:#FFD21F;--ink:#0b0f1a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:IDX,sans-serif;color:#fff}
+#gl{position:absolute;inset:0;width:1080px;height:1920px}
+.layer{position:absolute;inset:0;pointer-events:none}
+#vignette{background:
+  linear-gradient(180deg,rgba(5,8,18,.78) 0%,rgba(5,8,18,.35) 22%,rgba(0,0,0,0) 42%,rgba(0,0,0,0) 62%,rgba(5,8,18,.55) 82%,rgba(5,8,18,.85) 100%),
+  radial-gradient(ellipse at 50% 55%,rgba(0,0,0,0) 55%,rgba(0,0,0,.45) 100%)}
+#flash{background:#fff;opacity:0}
+#grain{opacity:.07;mix-blend-mode:overlay}
+
+/* üst başlık */
+#header{position:absolute;left:0;right:0;top:92px;display:flex;flex-direction:column;align-items:center;gap:18px}
+#hpill{display:flex;align-items:center;gap:14px;padding:14px 28px;border-radius:999px;background:rgba(10,14,28,.55);
+  border:2px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);font-family:IDX;font-size:34px;letter-spacing:1px}
+#hpill .flag{width:44px;height:30px;border-radius:5px;background:var(--red);position:relative;overflow:hidden}
+#progress{display:flex;gap:10px}
+#progress i{display:block;width:64px;height:10px;border-radius:6px;background:rgba(255,255,255,.22);transition:none}
+#progress i.done{background:rgba(255,255,255,.85)}
+#progress i.cur{background:var(--red);box-shadow:0 0 18px rgba(227,10,23,.9)}
+
+/* dağ bilgisi */
+#info{position:absolute;left:64px;top:250px;width:780px}
+#rank{font-family:IDB;font-size:300px;line-height:.82;letter-spacing:-12px;
+  background:linear-gradient(180deg,#fff 0%,#ffe9a8 55%,#ffb100 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 10px 0 rgba(227,10,23,.95)) drop-shadow(0 22px 30px rgba(0,0,0,.55));transform-origin:0 70%}
+#rank small{font-size:150px;letter-spacing:-4px;vertical-align:top;position:relative;top:22px;margin-right:6px}
+#name{margin-top:26px;font-family:IDB;font-size:112px;line-height:.95;letter-spacing:-3px;text-shadow:0 6px 24px rgba(0,0,0,.55);white-space:nowrap}
+#sub{margin-top:10px;font-family:IDBo;font-size:44px;color:#ffe9a8;text-shadow:0 3px 14px rgba(0,0,0,.6)}
+#chips{margin-top:22px;display:flex;gap:14px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:16px;font-family:IDBo;font-size:34px;
+  background:rgba(10,14,28,.62);border:2px solid rgba(255,255,255,.16)}
+.chip.red{background:var(--red);border-color:rgba(255,255,255,.35)}
+.chip svg{width:34px;height:34px}
+#height{margin-top:26px;display:flex;align-items:baseline;gap:14px;font-family:IDB;font-size:150px;letter-spacing:-5px;line-height:1;
+  text-shadow:0 8px 30px rgba(0,0,0,.6)}
+#height span.u{font-size:70px;color:var(--yel);letter-spacing:0}
+
+/* yükseklik göstergesi */
+#gauge{position:absolute;right:58px;top:420px;width:110px;height:620px}
+#gtrack{position:absolute;right:0;top:0;bottom:0;width:26px;border-radius:14px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.25);overflow:hidden}
+#gfill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(0deg,var(--red),#ff6a3d 60%,var(--yel));box-shadow:0 0 24px rgba(255,120,40,.8)}
+.gt{position:absolute;right:36px;font-family:ISB;font-size:22px;color:rgba(255,255,255,.75);transform:translateY(-50%);white-space:nowrap}
+#gagri{position:absolute;right:-6px;width:150px;border-top:3px dashed var(--yel);}
+#gagri b{position:absolute;right:0;top:-36px;font-family:IDBo;font-size:22px;color:var(--yel);white-space:nowrap}
+
+/* altyazı */
+#subs{position:absolute;left:60px;right:60px;top:1300px;height:260px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:4px 30px}
+#subs span{font-family:IDB;font-size:82px;line-height:1.08;color:#fff;letter-spacing:-1px;
+  -webkit-text-stroke:3px #000;paint-order:stroke fill;text-shadow:0 6px 0 rgba(0,0,0,.85),0 10px 26px rgba(0,0,0,.6);display:inline-block}
+#subs span.on{color:var(--yel)}
+
+/* giriş */
+#intro{position:absolute;left:0;right:0;top:420px;display:flex;flex-direction:column;align-items:center;text-align:center}
+#intro .l{font-family:IDB;font-size:116px;line-height:1;letter-spacing:-3px;text-shadow:0 8px 30px rgba(0,0,0,.7)}
+#intro .big{font-size:420px;line-height:.85;letter-spacing:-20px;color:var(--red);-webkit-text-stroke:0;
+  filter:drop-shadow(0 12px 0 #fff) drop-shadow(0 30px 40px rgba(0,0,0,.6))}
+#intro .tag{margin-top:34px;padding:14px 30px;border-radius:999px;background:var(--yel);color:var(--ink);font-family:IDB;font-size:42px}
+
+/* kapanış */
+#outro{position:absolute;left:56px;right:56px;top:250px}
+#outro h2{font-family:IDB;font-size:70px;letter-spacing:-2px;margin-bottom:24px;text-align:center;text-shadow:0 6px 24px rgba(0,0,0,.6)}
+.bar{position:relative;height:62px;margin:10px 0;display:flex;align-items:center}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:14px;background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,.30));border:2px solid rgba(255,255,255,.25)}
+.bar.top .fill{background:linear-gradient(90deg,var(--red),#ff7a2f);border-color:rgba(255,255,255,.5);box-shadow:0 0 30px rgba(227,10,23,.6)}
+.bar .t{position:relative;padding-left:20px;font-family:IDX;font-size:36px;display:flex;gap:16px;align-items:center;width:100%}
+.bar .t b{font-family:IDB;width:54px;color:var(--yel)}
+.bar .t em{font-style:normal;margin-left:auto;padding-right:20px;font-family:IDB}
+#cta{position:absolute;left:0;right:0;top:1150px;display:flex;justify-content:center;gap:20px}
+#cta div{padding:22px 34px;border-radius:22px;font-family:IDB;font-size:44px;display:flex;align-items:center;gap:14px}
+#cta .c1{background:#fff;color:var(--ink)}
+#cta .c2{background:var(--red)}
+#cta svg{width:44px;height:44px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="gl" width="1080" height="1920"></canvas>
+<div class="layer" id="vignette"></div>
+<canvas class="layer" id="grain" width="540" height="960" style="width:1080px;height:1920px"></canvas>
+
+<div class="layer" id="hud">
+  <div id="header">
+    <div id="hpill"><div class="flag"><svg viewBox="0 0 30 20" width="44" height="30"><circle cx="11.5" cy="10" r="5" fill="#fff"/><circle cx="12.8" cy="10" r="4" fill="#E30A17"/><polygon fill="#fff" points="17.6,10 20.6,8.9 19.2,11.7 19.2,8.3 20.6,11.1"/></svg></div>TÜRKİYE'NİN EN YÜKSEK 10 DAĞI</div>
+    <div id="progress"></div>
+  </div>
+
+  <div id="intro">
+    <div class="l" id="il1">TÜRKİYE'NİN</div>
+    <div class="l" id="il2">EN YÜKSEK</div>
+    <div class="l big" id="il3">10</div>
+    <div class="l" id="il4">DAĞI</div>
+    <div class="tag" id="itag">1 NUMARA EFSANE</div>
+  </div>
+
+  <div id="info">
+    <div id="rank"><small>#</small><span id="rankn">10</span></div>
+    <div id="name">Medetsiz</div>
+    <div id="sub">Bolkar Dağları</div>
+    <div id="chips">
+      <div class="chip red" id="city"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg><span id="cityt">Niğde</span></div>
+      <div class="chip" id="fact"><svg viewBox="0 0 24 24" fill="#FFD21F"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></svg><span id="factt"></span></div>
+    </div>
+    <div id="height"><span id="hnum">0</span><span class="u">m</span></div>
+  </div>
+
+  <div id="gauge">
+    <div id="gtrack"><div id="gfill"></div></div>
+    <div id="gagri"><b>AĞRI 5.137</b></div>
+  </div>
+
+  <div id="outro">
+    <h2>HEPSİ BİR ARADA</h2>
+    <div id="bars"></div>
+  </div>
+  <div id="cta">
+    <div class="c1"><svg viewBox="0 0 24 24" fill="#0b0f1a"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z"/></svg>YORUMLARA YAZ</div>
+    <div class="c2"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>TAKİP ET</div>
+  </div>
+
+  <div id="subs"></div>
+</div>
+<div class="layer" id="flash"></div>
+
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+const TL = await (await fetch('../build/timeline.json')).json();
+const W = 1080, H = 1920, AGRI = 5137;
+const $ = id => document.getElementById(id);
+
+/* ---------- yardımcılar ---------- */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const eOut = t => 1 - Math.pow(1 - t, 3);
+const eInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const smooth = (a, b, x) => { const t = inv(a, b, x); return t * t * (3 - 2 * t); };
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+function hash(x, y, s) {
+  let h = Math.imul(x | 0, 374761393) ^ Math.imul(y | 0, 668265263) ^ Math.imul(s | 0, 982451653);
+  h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967295;
+}
+function vnoise(x, y, s) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s);
+  return lerp(lerp(a, b, u), lerp(c, d, u), v);
+}
+const fbm = (x, y, s, o = 5) => { let a = 0, f = 1, amp = .5, n = 0; for (let i = 0; i < o; i++) { a += amp * vnoise(x * f, y * f, s + i * 17); n += amp; f *= 2.03; amp *= .5; } return a / n; };
+const ridged = (x, y, s, o = 5) => { let a = 0, f = 1, amp = .5, n = 0; for (let i = 0; i < o; i++) { const v = 1 - Math.abs(vnoise(x * f, y * f, s + i * 31) * 2 - 1); a += amp * v * v; n += amp; f *= 2.1; amp *= .5; } return a / n; };
+function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+/* ---------- three.js temel (gerçek arazi) ---------- */
+const renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W, H, false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(28, W / H, 5, 30000);
+const EX = 1.3, SPAN = 3200; // 1 birim = 10 m, dikey abartı 1.25
+
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, sunDir: { value: new THREE.Vector3() }, sunCol: { value: new THREE.Color() }, stars: { value: 0 } },
+  vertexShader: `varying vec3 vP; void main(){ vP = normalize(position); vec4 p = projectionMatrix*modelViewMatrix*vec4(position,1.); gl_Position = p.xyww; }`,
+  fragmentShader: `uniform vec3 top,hor,sunCol,sunDir; uniform float stars; varying vec3 vP;
+    float h(vec3 p){ return fract(sin(dot(p,vec3(12.9898,78.233,45.164)))*43758.5453); }
+    void main(){ float y = clamp(vP.y,0.,1.); vec3 c = mix(hor, top, pow(y,.45));
+      float s = max(dot(normalize(vP), normalize(sunDir)),0.);
+      c += sunCol*(pow(s,900.)*4.0 + pow(s,32.)*.35 + pow(s,5.)*.22) * (1. - y*.5);
+      vec3 q = floor(vP*480.); float st = step(.9968, h(q)) * smoothstep(.04,.35,y) * stars; c += vec3(st)*.9;
+      gl_FragColor = vec4(c,1.); }`
+});
+const sky = new THREE.Mesh(new THREE.SphereGeometry(20000, 48, 24), skyMat); sky.frustumCulled = false; scene.add(sky);
+scene.fog = new THREE.FogExp2(0xffffff, .00032);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x334455, .7); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 3); scene.add(sun); scene.add(sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -1800, right: 1800, top: 1800, bottom: -1800, near: 100, far: 14000 });
+sun.shadow.bias = -.0004; sun.shadow.normalBias = 3;
+
+/* palet: [üst gök, ufuk, güneş rengi, güneş yüksekliği(°), ışık, yıldız, sis] */
+const PAL = {
+  night:  ['#0b1230', '#4b4a78', '#ffb38a', 4, 1.1, 1, .00030],
+  dawn:   ['#3a64ad', '#f0c6a6', '#ffd2a0', 11, 2.8, 0, .00028],
+  gold:   ['#3f74c0', '#f3d6ae', '#ffdcaa', 16, 3.1, 0, .00026],
+  blue:   ['#2c69c6', '#c7dcf0', '#fff4e2', 34, 3.2, 0, .00022],
+  sunset: ['#30407c', '#f0a06c', '#ffb072', 7, 2.9, 0, .00030],
+  dusk:   ['#1b2350', '#b47a90', '#ffb39a', 5, 1.7, .35, .00030],
+  storm:  ['#5a6a80', '#c9d2dc', '#ffffff', 26, 2.3, 0, .00034],
+};
+function applyPal(p, az) {
+  const [t, h, s, el, li, st, fd] = PAL[p];
+  skyMat.uniforms.top.value.set(t); skyMat.uniforms.hor.value.set(h); skyMat.uniforms.sunCol.value.set(s); skyMat.uniforms.stars.value = st;
+  const e = el * Math.PI / 180, d = new THREE.Vector3(Math.cos(e) * Math.cos(az), Math.sin(e), Math.cos(e) * Math.sin(az));
+  skyMat.uniforms.sunDir.value.copy(d);
+  sun.position.copy(d).multiplyScalar(6000); sun.color.set(s).lerp(new THREE.Color('#fff'), .3); sun.intensity = li * .62;
+  scene.fog.color.set(h).lerp(new THREE.Color(t), .12); scene.fog.density = fd;
+  hemi.color.set(t).lerp(new THREE.Color('#fff'), .55); hemi.groundColor.set(h).multiplyScalar(.4);
+  hemi.intensity = p === 'night' ? .35 : .55;
+  skirt.material.color.copy(scene.fog.color);
+}
+
+/* ---------- gerçek arazi verisi ---------- */
+// a0: kamera yörüngesi açısı, snow: kar çizgisi (m), dist: zirveye uzaklık (birim=10 m)
+const LOOK = {
+  10: { pal: 'dawn',   a0: 1.0, snow: 3225, dist: 760 },
+  9:  { pal: 'blue',   a0: 2.2, snow: 3273, dist: 760 },
+  8:  { pal: 'sunset', a0: 3.6, snow: 3246, dist: 820 },
+  7:  { pal: 'gold',   a0: 4.4, snow: 3432, dist: 700 },
+  6:  { pal: 'dusk',   a0: .75, snow: 3620, dist: 820 },
+  5:  { pal: 'blue',   a0: 4.0, snow: 3599, dist: 900 },
+  4:  { pal: 'storm',  a0: 1.3, snow: 3625, dist: 720, snowfall: true },
+  3:  { pal: 'gold',   a0: 4.55, snow: 3771, dist: 950 },
+  2:  { pal: 'blue',   a0: 2.6, snow: 3675, dist: 760, snowfall: true },
+  1:  { pal: 'sunset', a0: 2.25, snow: 4050, dist: 1000, snowfall: true },
+};
+const META = await (await fetch('../build/terrain/meta.json')).json();
+const TERR = {}, texLoader = new THREE.TextureLoader();
+await Promise.all(Object.keys(META).map(async r => {
+  const buf = await (await fetch(`../build/terrain/${r}.f32`)).arrayBuffer();
+  const tex = await texLoader.loadAsync(`../build/terrain/${r}.jpg`);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true;
+  TERR[r] = { h: new Float32Array(buf), tex, n: META[r].n };
+}));
+
+const skirt = new THREE.Mesh(new THREE.PlaneGeometry(60000, 60000), new THREE.MeshBasicMaterial({ color: '#888', fog: false }));
+skirt.rotation.x = -Math.PI / 2; scene.add(skirt);
+
+let terrain = null, curKey = null, peakY = 400, cur = null;
+function makeMat(T, snowLine) {
+  const mat = new THREE.MeshStandardMaterial({ map: T.tex, bumpMap: T.tex, bumpScale: 2.2, roughness: .96, metalness: 0 });
+  mat.onBeforeCompile = sh => {
+    sh.uniforms.uSnow = { value: snowLine };
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vHm; varying float vNy; varying vec2 vU;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>\n vHm = position.y * 10. / ${EX.toFixed(3)}; vNy = normal.y; vU = uv;`);
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uSnow; varying float vHm; varying float vNy; varying vec2 vU;')
+      .replace('#include <map_fragment>', `#include <map_fragment>
+        vec3 sat = diffuseColor.rgb; float lum = dot(sat, vec3(.299,.587,.114));
+        sat = mix(vec3(lum), sat, 1.1); sat = pow(sat, vec3(1.05)) * 1.08;
+        float nz = fract(sin(dot(floor(vU*1400.), vec2(12.9898,78.233)))*43758.5453);
+        float nz2 = sin(vU.x*180.+sin(vU.y*140.)*2.)*.5+.5;
+        float sn = smoothstep(uSnow - 60., uSnow + 160., vHm + (nz2-.5)*120. + nz*30. + (lum-.35)*160.) * smoothstep(.55, .8, vNy);
+        sat = mix(sat, vec3(.92,.94,.98) * (.9 + nz*.1), clamp(sn, 0., 1.) * .8);
+        diffuseColor.rgb = sat;`)
+      .replace('#include <fog_fragment>', `#include <fog_fragment>
+        #ifdef USE_FOG
+        float ed = length(vU - .5) * 2.;
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, smoothstep(.82, .99, ed));
+        #endif`);
+  };
+  return mat;
+}
+function buildTerrain(rank, L) {
+  if (terrain) { scene.remove(terrain); terrain.geometry.dispose(); terrain.material.dispose(); }
+  const T = TERR[rank], N = T.n, g = new THREE.PlaneGeometry(SPAN, SPAN, N - 1, N - 1); g.rotateX(-Math.PI / 2);
+  const pos = g.attributes.position; let best = -1, bi = 0, minH = 1e9;
+  for (let k = 0; k < N * N; k++) {
+    const hm = T.h[k]; pos.setY(k, hm / 10 * EX); if (hm < minH) minH = hm;
+    const i = k % N, j = (k / N) | 0; if (Math.abs(i - N / 2) < N * .12 && Math.abs(j - N / 2) < N * .12 && hm > best) { best = hm; bi = k; }
+  }
+  const px = pos.getX(bi), pz = pos.getZ(bi); g.translate(-px, 0, -pz); g.computeVertexNormals();
+  terrain = new THREE.Mesh(g, makeMat(T, L.snow)); terrain.castShadow = terrain.receiveShadow = true; scene.add(terrain);
+  skirt.position.y = minH / 10 * EX - 30;
+  peakY = best / 10 * EX; cur = { T, N, px, pz };
+}
+// kamera altındaki zemin yüksekliği (çarpışmayı önlemek için)
+function groundAt(x, z) {
+  const { T, N, px, pz } = cur; const fx = ((x + px) / SPAN + .5) * (N - 1), fz = ((z + pz) / SPAN + .5) * (N - 1);
+  const i = clamp(Math.floor(fx), 0, N - 2), j = clamp(Math.floor(fz), 0, N - 2), u = clamp(fx - i), v = clamp(fz - j);
+  const h = (a, b) => T.h[b * N + a];
+  return lerp(lerp(h(i, j), h(i + 1, j), u), lerp(h(i, j + 1), h(i + 1, j + 1), u), v) / 10 * EX;
+}
+
+/* ---------- bulutlar, kar ---------- */
+function cloudTex() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256; const x = cv.getContext('2d'); const r = rng(7);
+  for (let i = 0; i < 40; i++) {
+    const cx = 50 + r() * 156, cy = 110 + r() * 50, rr = 20 + r() * 50, g = x.createRadialGradient(cx, cy, 0, cx, cy, rr);
+    g.addColorStop(0, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  }
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const CT = cloudTex(), clouds = [];
+for (let i = 0; i < 18; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: CT, transparent: true, depthWrite: false, fog: true })); scene.add(sp); clouds.push(sp); }
+function dotTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 32; const x = cv.getContext('2d'); const g = x.createRadialGradient(16, 16, 0, 16, 16, 16); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 32, 32); return new THREE.CanvasTexture(cv); }
+const SNOWN = 2600, snowG = new THREE.BufferGeometry(), snowP = new Float32Array(SNOWN * 3), snowSeed = [];
+{ const r = rng(3); for (let i = 0; i < SNOWN; i++) snowSeed.push([r(), r(), r(), r()]); }
+snowG.setAttribute('position', new THREE.BufferAttribute(snowP, 3));
+const snow = new THREE.Points(snowG, new THREE.PointsMaterial({ color: 0xffffff, size: 1.0, map: dotTex(), transparent: true, opacity: .85, depthWrite: false, fog: false }));
+snow.frustumCulled = false; scene.add(snow);
+
+/* ---------- HUD kurulum ---------- */
+const prog = $('progress'); for (let i = 0; i < 10; i++) prog.appendChild(document.createElement('i'));
+{ // gösterge çizgileri
+  const g = $('gauge'); for (let m = 0; m <= 4000; m += 1000) { const d = document.createElement('div'); d.className = 'gt'; d.textContent = m ? fmt(m) : '0'; d.style.top = (620 - m / 5500 * 620) + 'px'; g.appendChild(d); }
+  $('gagri').style.top = (620 - AGRI / 5500 * 620) + 'px';
+}
+const outroScene = TL.scenes.find(s => s.kind === 'outro');
+const barsEl = $('bars'), barRows = [];
+[...outroScene.all].sort((a, b) => a.rank - b.rank).forEach(m => {
+  const d = document.createElement('div'); d.className = 'bar' + (m.rank === 1 ? ' top' : '');
+  d.innerHTML = `<div class="fill"></div><div class="t"><b>${m.rank}</b>${m.name}<em>${fmt(m.h)} m</em></div>`;
+  barsEl.appendChild(d); barRows.push({ el: d, fill: d.querySelector('.fill'), m });
+});
+// film greni
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+function grain(f) { const r = rng(f * 7919 + 1), d = gimg.data; for (let i = 0; i < d.length; i += 4) { const v = r() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } gctx.putImageData(gimg, 0, 0); }
+
+/* altyazıyı 1-3 kelimelik parçalara böl */
+for (const s of TL.scenes) {
+  const ch = []; let cur = [];
+  s.words.forEach((w, i) => { cur.push(w); const end = (/[.,:!?]$/.test(w.w) && !/^\d+\.$/.test(w.w)) || cur.length >= 3 || i === s.words.length - 1; if (end) { ch.push(cur); cur = []; } });
+  s.chunks = ch;
+}
+
+/* ---------- kare çizimi ---------- */
+const show = (el, v) => el.classList.toggle('hide', !v);
+let lastSubsKey = '';
+function setSubs(t, s) {
+  const el = $('subs');
+  let chunk = null;
+  for (const c of s.chunks) if (t >= c[0].s - .05 && t < c[c.length - 1].e + .25) chunk = c;
+  if (!chunk) { el.innerHTML = ''; lastSubsKey = ''; return; }
+  const key = chunk[0].s; if (key !== lastSubsKey) { el.innerHTML = chunk.map(w => `<span>${w.w}</span>`).join(''); lastSubsKey = key; }
+  const pop = eBack(inv(chunk[0].s - .05, chunk[0].s + .12, t));
+  el.style.transform = `scale(${lerp(.75, 1, pop)})`; el.style.opacity = clamp(pop * 1.5);
+  [...el.children].forEach((sp, i) => { const w = chunk[i], on = t >= w.s && t < w.e + .02; sp.classList.toggle('on', on); sp.style.transform = on ? 'scale(1.06) rotate(-1.5deg)' : 'none'; });
+}
+
+function sceneAt(t) { let s = TL.scenes[0]; for (const x of TL.scenes) if (t >= x.start) s = x; return s; }
+
+window.renderAt = function (t) {
+  const s = sceneAt(t), lt = t - s.start, p = lt / s.dur, f = Math.round(t * TL.fps);
+  const isM = s.kind === 'mountain', m = isM ? s.m : TL.scenes[TL.scenes.length - 2].m;
+  const L = isM ? LOOK[m.rank] : (s.kind === 'intro' ? { ...LOOK[1], pal: 'night', a0: 2.0 } : { ...LOOK[1], pal: 'dusk', a0: 2.9 });
+  if (curKey !== s.key) { buildTerrain(m.rank, L); applyPal(L.pal, L.a0 + 1.15); curKey = s.key; }
+
+  /* kamera: zirve etrafında drone yörüngesi */
+  const P = peakY, D = L.dist * 1.45;
+  let ang, rad, cy, ty;
+  if (s.kind === 'intro') {
+    ang = L.a0 + p * .2; rad = lerp(1500, 1250, eInOut(p)); cy = P + lerp(420, 220, eInOut(p)); ty = P + 60;
+  } else if (s.kind === 'outro') {
+    ang = L.a0 + p * .25; rad = 1450; cy = P + 300; ty = P + 200;
+  } else {
+    const inT = eOut(inv(0, .75, lt));
+    ang = L.a0 + p * .32 - (1 - inT) * .55;
+    rad = lerp(D * 1.1, D * .9, eInOut(p)) + (1 - inT) * D * .9;
+    cy = P + lerp(D * .2, D * .3, eInOut(p)) + (1 - inT) * D * .35;
+    ty = P + rad * .05;
+  }
+  let cx = Math.cos(ang) * rad, cz = Math.sin(ang) * rad;
+  cy = Math.max(cy, groundAt(cx, cz) + 35);
+  camera.position.set(cx, cy, cz);
+  camera.lookAt(0, ty, 0);
+  if (isM) camera.rotateZ(Math.sin(lt * .8) * .006);
+  sun.target.position.set(0, P * .6, 0);
+
+  /* bulutlar */
+  const cr = rng(m.rank * 97 + (isM ? 0 : 5));
+  clouds.forEach(c => {
+    let a = cr() * Math.PI * 2 + t * .008, rr = 1400 + cr() * 2600; const hy = P * (.72 + cr() * .22), sc = 700 + cr() * 900;
+    if (Math.abs(Math.atan2(Math.sin(a - ang), Math.cos(a - ang))) < 1.1) rr += 2500;
+    c.position.set(Math.cos(a) * rr, hy, Math.sin(a) * rr); c.scale.set(sc * 1.8, sc * .7, 1);
+    c.material.opacity = (s.kind === 'intro' ? .25 : .5) * (.4 + cr() * .6);
+    c.material.color.set(L.pal === 'night' || L.pal === 'dusk' ? '#a49ab8' : L.pal === 'sunset' ? '#ffd6bf' : '#ffffff');
+  });
+  snow.visible = !!L.snowfall && isM;
+  if (snow.visible) {
+    const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+    for (let i = 0; i < SNOWN; i++) {
+      const [a, b, c, d] = snowSeed[i], fall = (d + t * (.12 + a * .08)) % 1, dist = 20 + b * 260;
+      const sx = (a - .5) * dist * 1.1, sy = (1 - fall) * 2 - 1;
+      snowP[i * 3] = cx + fwd.x * dist + (-fwd.z) * sx + Math.sin(t * 1.3 + i) * 2;
+      snowP[i * 3 + 1] = cy + sy * dist * .9;
+      snowP[i * 3 + 2] = cz + fwd.z * dist + fwd.x * sx;
+    }
+    snowG.attributes.position.needsUpdate = true;
+  }
+  renderer.render(scene, camera);
+
+  /* geçiş: bulanıklık + flaş */
+  const inB = 1 - eOut(inv(0, .35, lt)), outB = smooth(s.dur - .22, s.dur, lt);
+  const blur = (s === TL.scenes[0] ? 0 : inB * 16) + (s.kind === 'outro' ? 0 : outB * 12);
+  $('gl').style.filter = blur > .2 ? `blur(${blur.toFixed(1)}px) brightness(${1 + blur * .02})` : 'none';
+  $('flash').style.background = s === TL.scenes[0] ? '#000' : '#fff';
+  $('flash').style.opacity = s === TL.scenes[0] ? clamp(1 - lt / .4) : inB * .55;
+  grain(f);
+
+  /* HUD */
+  show($('intro'), s.kind === 'intro'); show($('info'), isM); show($('gauge'), isM); show($('outro'), s.kind === 'outro'); show($('cta'), s.kind === 'outro');
+  [...prog.children].forEach((el, i) => { const r = 10 - i; el.className = isM ? (r === m.rank ? 'cur' : r > m.rank ? 'done' : '') : s.kind === 'outro' ? 'done' : ''; });
+  $('header').style.opacity = s.kind === 'intro' ? smooth(s.dur - .5, s.dur, lt) : 1;
+
+  if (s.kind === 'intro') {
+    const items = ['il1', 'il2', 'il3', 'il4', 'itag'];
+    items.forEach((id, i) => {
+      const st = .15 + i * .32, k = eBack(inv(st, st + .45, lt)), o = 1 - smooth(s.dur - .3, s.dur, lt);
+      const el = $(id); el.style.opacity = clamp(k * 1.4) * o;
+      el.style.transform = id === 'il3' ? `scale(${lerp(2.6, 1, k) + Math.sin(lt * 4) * .015}) rotate(${lerp(-12, -3, k)}deg)` : `translateY(${lerp(80, 0, k)}px) scale(${lerp(.8, 1, k)})`;
+    });
+  }
+  if (isM) {
+    $('rankn').textContent = m.rank; $('name').textContent = m.name; $('sub').textContent = m.sub; $('cityt').textContent = m.city; $('factt').textContent = m.fact;
+    const kR = eBack(inv(.12, .55, lt)), out = smooth(s.dur - .25, s.dur, lt);
+    $('rank').style.transform = `scale(${lerp(2.2, 1, kR) * (1 + Math.sin(clamp(lt - .55, 0, 9) * 2.2) * .012)}) rotate(${lerp(-14, 0, kR)}deg)`;
+    $('rank').style.opacity = clamp(kR * 2) * (1 - out);
+    const kN = eOut(inv(.32, .7, lt)); $('name').style.transform = `translateX(${lerp(-120, 0, kN)}px)`; $('name').style.opacity = kN * (1 - out);
+    const kS = eOut(inv(.45, .85, lt)); $('sub').style.transform = `translateX(${lerp(-90, 0, kS)}px)`; $('sub').style.opacity = kS * (1 - out);
+    const kC = eBack(inv(.6, 1.0, lt)); $('city').style.transform = `scale(${kC})`; $('city').style.opacity = clamp(kC) * (1 - out);
+    const kF = eBack(inv(1.9, 2.3, lt)); $('fact').style.transform = `scale(${kF})`; $('fact').style.opacity = clamp(kF) * (1 - out);
+    const kH = eOut(inv(.65, 1.85, lt)), done = lt > 1.85;
+    $('hnum').textContent = fmt(m.h * kH);
+    $('height').style.transform = `scale(${done ? 1 + .1 * Math.exp(-(lt - 1.85) * 7) : 1})`; $('height').style.transformOrigin = '0 80%';
+    $('height').style.opacity = clamp(inv(.55, .75, lt)) * (1 - out);
+    $('gfill').style.height = (m.h * kH / 5500 * 100) + '%';
+    const kG = eOut(inv(.3, .8, lt)); $('gauge').style.transform = `translateX(${lerp(160, 0, kG)}px)`; $('gauge').style.opacity = kG * (1 - out);
+    $('gagri').style.opacity = m.rank === 1 ? 0 : 1;
+  }
+  if (s.kind === 'outro') {
+    $('outro').querySelector('h2').style.opacity = eOut(inv(.1, .5, lt));
+    barRows.forEach((b, i) => {
+      const k = eOut(inv(.25 + (9 - i) * .09, .85 + (9 - i) * .09, lt));
+      b.fill.style.width = (b.m.h / AGRI * 100 * k) + '%'; b.el.style.opacity = clamp(k * 3);
+      b.el.style.transform = `translateX(${lerp(-60, 0, k)}px)`;
+    });
+    const kc = eBack(inv(1.9, 2.4, lt)); $('cta').style.transform = `scale(${kc * (1 + Math.sin(lt * 6) * .02 * clamp(lt - 2.4))})`; $('cta').style.opacity = clamp(kc);
+  }
+  setSubs(t, s);
+};
+window.TL = TL;
+await document.fonts.ready;
+await Promise.all(['IDB', 'IDX', 'IDBo', 'ISB'].map(f => document.fonts.load(`40px ${f}`)));
+window.renderAt(0);
+window.READY = true;
+</script>
+</body>
+</html>

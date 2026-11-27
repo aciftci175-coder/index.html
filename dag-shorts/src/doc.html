@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Türkiye'nin En Yüksek 10 Dağı</title>
+<style>
+@font-face{font-family:IL;src:url(fonts/InterDisplay-Light.otf)}
+@font-face{font-family:IR;src:url(fonts/InterDisplay-Regular.otf)}
+@font-face{font-family:IM;src:url(fonts/InterDisplay-Medium.otf)}
+@font-face{font-family:ISB;src:url(fonts/Inter-SemiBold.otf)}
+:root{--gold:#e8c98a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;font-family:IR,sans-serif;color:#fff}
+#gl{position:absolute;inset:0;width:1080px;height:1920px}
+.layer{position:absolute;inset:0;pointer-events:none}
+#vignette{background:
+  linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,0) 12%,rgba(0,0,0,0) 50%,rgba(0,0,0,.35) 64%,rgba(0,0,0,.78) 86%,rgba(0,0,0,.9) 100%),
+  radial-gradient(ellipse at 50% 45%,rgba(0,0,0,0) 60%,rgba(0,0,0,.35) 100%)}
+#grain{opacity:.06;mix-blend-mode:overlay}
+#black{background:#000;opacity:0}
+#series{position:absolute;top:120px;left:0;right:0;text-align:center;font-family:IL;font-size:26px;letter-spacing:10px;color:rgba(255,255,255,.78)}
+#series b{font-family:IM;font-weight:normal;color:var(--gold)}
+#lt{position:absolute;left:72px;right:72px;top:1060px}
+#ltrow{display:flex;align-items:flex-start;gap:30px}
+#rank{font-family:IL;font-size:168px;line-height:.8;letter-spacing:-6px;color:var(--gold)}
+#vline{width:2px;height:150px;background:rgba(255,255,255,.55);margin-top:6px}
+#name{font-family:IM;font-size:84px;line-height:1;letter-spacing:-1px;white-space:nowrap;text-shadow:0 4px 24px rgba(0,0,0,.5)}
+#sub{margin-top:14px;font-family:IL;font-size:30px;letter-spacing:6px;text-transform:uppercase;color:rgba(255,255,255,.85)}
+#hline{height:1px;background:rgba(255,255,255,.5);margin:30px 0 22px;transform-origin:0 50%}
+#meta{display:flex;align-items:baseline;gap:34px}
+#height{font-family:IR;font-size:58px;letter-spacing:1px}
+#height span{font-family:IL;font-size:34px;color:var(--gold);margin-left:8px}
+#coord{font-family:IL;font-size:28px;letter-spacing:4px;color:rgba(255,255,255,.7)}
+#subs{position:absolute;left:80px;right:80px;top:1440px;text-align:center;font-family:ISB;font-size:46px;line-height:1.3;
+  color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.6)}
+#intro{position:absolute;left:0;right:0;top:700px;text-align:center}
+#intro .k{font-family:IL;font-size:28px;letter-spacing:14px;color:var(--gold)}
+#intro .t1{margin-top:34px;font-family:IL;font-size:92px;letter-spacing:10px;line-height:1.05}
+#intro .t2{font-family:IM;font-size:104px;letter-spacing:6px;line-height:1.05}
+#intro .ln{width:120px;height:2px;background:var(--gold);margin:40px auto 0}
+#outro{position:absolute;left:80px;right:80px;top:300px}
+#outro h2{font-family:IL;font-size:30px;letter-spacing:10px;text-align:center;color:var(--gold);margin-bottom:40px}
+.bar{display:flex;align-items:center;gap:20px;height:58px;font-size:30px}
+.bar b{font-family:IL;width:46px;color:var(--gold);font-weight:normal;text-align:right}
+.bar .nm{font-family:IR;width:250px;white-space:nowrap}
+.bar .tr{flex:1;height:4px;background:rgba(255,255,255,.12);position:relative}
+.bar .fl{position:absolute;left:0;top:0;bottom:0;background:rgba(255,255,255,.85)}
+.bar.top .fl{background:var(--gold)}
+.bar em{font-style:normal;font-family:IL;width:130px;text-align:right}
+#credits{position:absolute;left:80px;right:80px;top:1080px;text-align:center;font-family:IL;font-size:24px;line-height:1.6;letter-spacing:1px;color:rgba(255,255,255,.7)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<canvas id="gl" width="1080" height="1920"></canvas>
+<div class="layer" id="vignette"></div>
+<canvas class="layer" id="grain" width="540" height="960" style="width:1080px;height:1920px"></canvas>
+<div class="layer" id="hud">
+  <div id="series">TÜRKİYE'NİN EN YÜKSEK DAĞLARI · <b id="sern">10</b> / 10</div>
+  <div id="intro">
+    <div class="k" id="ik">BİR DOĞA BELGESELİ</div>
+    <div class="t1" id="it1">TÜRKİYE'NİN</div>
+    <div class="t2" id="it2">EN YÜKSEK 10 DAĞI</div>
+    <div class="ln" id="iln"></div>
+  </div>
+  <div id="lt">
+    <div id="ltrow"><div id="rank">10</div><div id="vline"></div><div><div id="name">Medetsiz</div><div id="sub">Bolkar Dağları · Niğde</div></div></div>
+    <div id="hline"></div>
+    <div id="meta"><div id="height">3.524<span>m</span></div><div id="coord">37°23′ K · 34°38′ D</div></div>
+  </div>
+  <div id="outro"><h2>ZİRVELER</h2><div id="bars"></div></div>
+  <div id="credits">Arazi verisi: AWS Terrain Tiles (Mapzen)<br>Uydu görüntüsü: Sentinel-2 cloudless 2016 by EOX<br>(Copernicus Sentinel verisi, CC BY 4.0)<br>Seslendirme: Google TTS</div>
+  <div id="subs"></div>
+</div>
+<div class="layer" id="black"></div>
+
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+const TL = await (await fetch('../build/' + (new URLSearchParams(location.search).get('tl') || 'timeline_doc') + '.json')).json();
+const W = 1080, H = 1920, AGRI = 5137;
+const $ = id => document.getElementById(id);
+
+/* ---------- yardımcılar ---------- */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const inv = (a, b, x) => clamp((x - a) / (b - a));
+const eOut = t => 1 - Math.pow(1 - t, 3);
+const eInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const eBack = t => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const smooth = (a, b, x) => { const t = inv(a, b, x); return t * t * (3 - 2 * t); };
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+function hash(x, y, s) {
+  let h = Math.imul(x | 0, 374761393) ^ Math.imul(y | 0, 668265263) ^ Math.imul(s | 0, 982451653);
+  h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16; return (h >>> 0) / 4294967295;
+}
+function vnoise(x, y, s) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  const a = hash(xi, yi, s), b = hash(xi + 1, yi, s), c = hash(xi, yi + 1, s), d = hash(xi + 1, yi + 1, s);
+  return lerp(lerp(a, b, u), lerp(c, d, u), v);
+}
+const fbm = (x, y, s, o = 5) => { let a = 0, f = 1, amp = .5, n = 0; for (let i = 0; i < o; i++) { a += amp * vnoise(x * f, y * f, s + i * 17); n += amp; f *= 2.03; amp *= .5; } return a / n; };
+const ridged = (x, y, s, o = 5) => { let a = 0, f = 1, amp = .5, n = 0; for (let i = 0; i < o; i++) { const v = 1 - Math.abs(vnoise(x * f, y * f, s + i * 31) * 2 - 1); a += amp * v * v; n += amp; f *= 2.1; amp *= .5; } return a / n; };
+function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t ^= t + Math.imul(t ^ (t >>> 7), 61 | t); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+/* ---------- three.js temel (gerçek arazi) ---------- */
+const Q = new URLSearchParams(location.search), RS = +(Q.get('rs') || 1), STRIDE = +(Q.get('st') || 1), SHADOW = Q.get('sh') !== '0';
+const renderer = new THREE.WebGLRenderer({ canvas: $('gl'), antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(Math.round(W * RS), Math.round(H * RS), false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = SHADOW; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(28, W / H, 5, 30000);
+const EX = 1.3, SPAN = 3200; // 1 birim = 10 m, dikey abartı 1.25
+
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: new THREE.Color() }, hor: { value: new THREE.Color() }, sunDir: { value: new THREE.Vector3() }, sunCol: { value: new THREE.Color() }, stars: { value: 0 } },
+  vertexShader: `varying vec3 vP; void main(){ vP = normalize(position); vec4 p = projectionMatrix*modelViewMatrix*vec4(position,1.); gl_Position = p.xyww; }`,
+  fragmentShader: `uniform vec3 top,hor,sunCol,sunDir; uniform float stars; varying vec3 vP;
+    float h(vec3 p){ return fract(sin(dot(p,vec3(12.9898,78.233,45.164)))*43758.5453); }
+    void main(){ float y = clamp(vP.y,0.,1.); vec3 c = mix(hor, top, pow(y,.45));
+      float s = max(dot(normalize(vP), normalize(sunDir)),0.);
+      c += sunCol*(pow(s,900.)*4.0 + pow(s,32.)*.3 + pow(s,5.)*.06) * (1. - y*.5);
+      vec3 q = floor(vP*480.); float st = step(.9968, h(q)) * smoothstep(.04,.35,y) * stars; c += vec3(st)*.9;
+      gl_FragColor = vec4(c,1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`
+});
+const sky = new THREE.Mesh(new THREE.SphereGeometry(20000, 48, 24), skyMat); sky.frustumCulled = false; scene.add(sky);
+scene.fog = new THREE.FogExp2(0xffffff, .00032);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x334455, .7); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffffff, 3); scene.add(sun); scene.add(sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -1800, right: 1800, top: 1800, bottom: -1800, near: 100, far: 14000 });
+sun.shadow.bias = -.0004; sun.shadow.normalBias = 3;
+
+/* palet: [üst gök, ufuk, güneş rengi, güneş yüksekliği(°), ışık, yıldız, sis] */
+const PAL = {
+  night:  ['#0b1230', '#4b4a78', '#ffb38a', 4, 1.1, 1, .00030],
+  dawn:   ['#3a64ad', '#f0c6a6', '#ffd2a0', 11, 2.8, 0, .00028],
+  gold:   ['#3f74c0', '#f3d6ae', '#ffdcaa', 16, 3.1, 0, .00026],
+  blue:   ['#2c69c6', '#c7dcf0', '#fff4e2', 34, 3.2, 0, .00022],
+  sunset: ['#30407c', '#f0a06c', '#ffb072', 7, 2.9, 0, .00030],
+  dusk:   ['#1b2350', '#b47a90', '#ffb39a', 5, 1.7, .35, .00030],
+  storm:  ['#5a6a80', '#c9d2dc', '#ffffff', 26, 2.3, 0, .00034],
+};
+function applyPal(p, az) {
+  const [t, h, s, el, li, st, fd] = PAL[p];
+  skyMat.uniforms.top.value.set(t); skyMat.uniforms.hor.value.set(h); skyMat.uniforms.sunCol.value.set(s); skyMat.uniforms.stars.value = st;
+  const e = el * Math.PI / 180, d = new THREE.Vector3(Math.cos(e) * Math.cos(az), Math.sin(e), Math.cos(e) * Math.sin(az));
+  skyMat.uniforms.sunDir.value.copy(d);
+  sun.position.copy(d).multiplyScalar(6000); sun.color.set(s).lerp(new THREE.Color('#fff'), .3); sun.intensity = li * .62;
+  scene.fog.color.set(h); scene.fog.density = fd * .7;
+  hemi.color.set(t).lerp(new THREE.Color('#fff'), .55); hemi.groundColor.set(h).multiplyScalar(.4);
+  hemi.intensity = p === 'night' ? .35 : .55;
+  skirt.material.color.copy(scene.fog.color);
+}
+
+/* ---------- gerçek arazi verisi ---------- */
+// a0: kamera yörüngesi açısı, snow: kar çizgisi (m), dist: zirveye uzaklık (birim=10 m)
+const LOOK = {
+  10: { pal: 'dawn',   a0: 1.0, snow: 3225, dist: 760 },
+  9:  { pal: 'blue',   a0: 2.2, snow: 3273, dist: 760 },
+  8:  { pal: 'sunset', a0: 3.6, snow: 3246, dist: 820 },
+  7:  { pal: 'gold',   a0: 4.4, snow: 3432, dist: 700 },
+  6:  { pal: 'dusk',   a0: .75, snow: 3620, dist: 820 },
+  5:  { pal: 'blue',   a0: 4.0, snow: 3599, dist: 900 },
+  4:  { pal: 'storm',  a0: 1.3, snow: 3625, dist: 720, snowfall: true },
+  3:  { pal: 'gold',   a0: 4.55, snow: 3771, dist: 950 },
+  2:  { pal: 'blue',   a0: 2.6, snow: 3675, dist: 760, snowfall: true },
+  1:  { pal: 'sunset', a0: 2.25, snow: 4050, dist: 1000, snowfall: true },
+};
+const META = await (await fetch('../build/terrain/meta.json')).json();
+const TERR = {}, texLoader = new THREE.TextureLoader();
+await Promise.all(Object.keys(META).map(async r => {
+  const buf = await (await fetch(`../build/terrain/${r}.f32`)).arrayBuffer();
+  const tex = await texLoader.loadAsync(`../build/terrain/${r}.jpg`);
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true;
+  TERR[r] = { h: new Float32Array(buf), tex, n: META[r].n };
+}));
+
+const skirt = new THREE.Mesh(new THREE.PlaneGeometry(60000, 60000), new THREE.MeshBasicMaterial({ color: '#888', fog: false }));
+skirt.rotation.x = -Math.PI / 2; skirt.visible = false; scene.add(skirt);
+
+let terrain = null, curKey = null, peakY = 400, cur = null;
+function makeMat(T, snowLine) {
+  const mat = new THREE.MeshStandardMaterial({ map: T.tex, bumpMap: T.tex, bumpScale: 2.2, roughness: .96, metalness: 0 });
+  mat.onBeforeCompile = sh => {
+    sh.uniforms.uSnow = { value: snowLine };
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vHm; varying float vNy; varying vec2 vU;')
+      .replace('#include <begin_vertex>', `#include <begin_vertex>\n vHm = position.y * 10. / ${EX.toFixed(3)}; vNy = normal.y; vU = uv;`);
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uSnow; varying float vHm; varying float vNy; varying vec2 vU;')
+      .replace('#include <map_fragment>', `#include <map_fragment>
+        vec3 sat = diffuseColor.rgb; float lum = dot(sat, vec3(.299,.587,.114));
+        sat = mix(vec3(lum), sat, 1.1); sat = pow(sat, vec3(1.05)) * 1.08;
+        float nz = fract(sin(dot(floor(vU*1400.), vec2(12.9898,78.233)))*43758.5453);
+        float nz2 = sin(vU.x*180.+sin(vU.y*140.)*2.)*.5+.5;
+        float sn = smoothstep(uSnow - 60., uSnow + 160., vHm + (nz2-.5)*120. + nz*30. + (lum-.35)*160.) * smoothstep(.55, .8, vNy);
+        sat = mix(sat, vec3(.92,.94,.98) * (.9 + nz*.1), clamp(sn, 0., 1.) * .8);
+        diffuseColor.rgb = sat;`)
+      .replace('#include <fog_fragment>', `#include <fog_fragment>
+        #ifdef USE_FOG
+        float ed = length(vU - .5) * 2.;
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, smoothstep(.82, .99, ed));
+        #endif`);
+  };
+  return mat;
+}
+function buildTerrain(rank, L) {
+  if (terrain) { scene.remove(terrain); terrain.geometry.dispose(); terrain.material.dispose(); }
+  const T0 = TERR[rank]; let T = T0;
+  if (STRIDE > 1) { const n0 = T0.n, n = Math.floor((n0 - 1) / STRIDE) + 1, h = new Float32Array(n * n); for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) h[j * n + i] = T0.h[j * STRIDE * n0 + i * STRIDE]; T = { h, n, tex: T0.tex }; }
+  const N = T.n, g = new THREE.PlaneGeometry(SPAN, SPAN, N - 1, N - 1); g.rotateX(-Math.PI / 2);
+  const pos = g.attributes.position; let best = -1, bi = 0, minH = 1e9;
+  for (let k = 0; k < N * N; k++) {
+    const hm = T.h[k]; pos.setY(k, hm / 10 * EX); if (hm < minH) minH = hm;
+    const i = k % N, j = (k / N) | 0; if (Math.abs(i - N / 2) < N * .12 && Math.abs(j - N / 2) < N * .12 && hm > best) { best = hm; bi = k; }
+  }
+  const px = pos.getX(bi), pz = pos.getZ(bi); g.translate(-px, 0, -pz); g.computeVertexNormals();
+  terrain = new THREE.Mesh(g, makeMat(T, L.snow)); terrain.castShadow = terrain.receiveShadow = true; scene.add(terrain);
+  skirt.position.y = minH / 10 * EX - 30;
+  peakY = best / 10 * EX; cur = { T, N, px, pz };
+}
+// kamera altındaki zemin yüksekliği (çarpışmayı önlemek için)
+function groundAt(x, z) {
+  const { T, N, px, pz } = cur; const fx = ((x + px) / SPAN + .5) * (N - 1), fz = ((z + pz) / SPAN + .5) * (N - 1);
+  const i = clamp(Math.floor(fx), 0, N - 2), j = clamp(Math.floor(fz), 0, N - 2), u = clamp(fx - i), v = clamp(fz - j);
+  const h = (a, b) => T.h[b * N + a];
+  return lerp(lerp(h(i, j), h(i + 1, j), u), lerp(h(i, j + 1), h(i + 1, j + 1), u), v) / 10 * EX;
+}
+
+/* ---------- bulutlar, kar ---------- */
+function cloudTex() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256; const x = cv.getContext('2d'); const r = rng(7);
+  for (let i = 0; i < 40; i++) {
+    const cx = 50 + r() * 156, cy = 110 + r() * 50, rr = 20 + r() * 50, g = x.createRadialGradient(cx, cy, 0, cx, cy, rr);
+    g.addColorStop(0, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+  }
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const CT = cloudTex(), clouds = [];
+for (let i = 0; i < 18; i++) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: CT, transparent: true, depthWrite: false, fog: true })); scene.add(sp); clouds.push(sp); }
+function dotTex() { const cv = document.createElement('canvas'); cv.width = cv.height = 32; const x = cv.getContext('2d'); const g = x.createRadialGradient(16, 16, 0, 16, 16, 16); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 32, 32); return new THREE.CanvasTexture(cv); }
+const SNOWN = 2600, snowG = new THREE.BufferGeometry(), snowP = new Float32Array(SNOWN * 3), snowSeed = [];
+{ const r = rng(3); for (let i = 0; i < SNOWN; i++) snowSeed.push([r(), r(), r(), r()]); }
+snowG.setAttribute('position', new THREE.BufferAttribute(snowP, 3));
+const snow = new THREE.Points(snowG, new THREE.PointsMaterial({ color: 0xffffff, size: .8, map: dotTex(), transparent: true, opacity: .6, depthWrite: false, fog: false }));
+snow.frustumCulled = false; scene.add(snow);
+
+/* ---------- HUD kurulum (belgesel) ---------- */
+const outroScene = TL.scenes.find(s => s.kind === 'outro');
+const barsEl = $('bars'), barRows = [];
+[...outroScene.all].sort((a, b) => a.rank - b.rank).forEach(m => {
+  const d = document.createElement('div'); d.className = 'bar' + (m.rank === 1 ? ' top' : '');
+  d.innerHTML = `<b>${m.rank}</b><div class="nm">${m.name}</div><div class="tr"><div class="fl"></div></div><em>${fmt(m.h)} m</em>`;
+  barsEl.appendChild(d); barRows.push({ el: d, fill: d.querySelector('.fl'), m });
+});
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+function grain(f) { const r = rng(f * 7919 + 1), d = gimg.data; for (let i = 0; i < d.length; i += 4) { const v = r() * 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } gctx.putImageData(gimg, 0, 0); }
+const dms = (v, p, n) => { const a = Math.abs(v), d = Math.floor(a), m = Math.round((a - d) * 60); return `${d}°${String(m).padStart(2, '0')}′ ${v >= 0 ? p : n}`; };
+/* altyazı: cümle bazlı (belgesel) */
+for (const s of TL.scenes) {
+  const ch = []; let cur = [];
+  s.words.forEach((w, i) => { cur.push(w); const end = (/[.!?…]$/.test(w.w) && !/^\d+\.$/.test(w.w) && !/^\d+\.\d+$/.test(w.w)) || i === s.words.length - 1 || (cur.length >= 7 && /,$/.test(w.w)); if (end) { ch.push(cur); cur = []; } });
+  s.chunks = ch;
+}
+
+/* ---------- kare çizimi ---------- */
+const show = (el, v) => el.classList.toggle('hide', !v);
+let lastSubsKey = '';
+function setSubs(t, s) {
+  const el = $('subs');
+  let chunk = null;
+  for (const c of s.chunks) if (t >= c[0].s - .05 && t < c[c.length - 1].e + .25) chunk = c;
+  if (!chunk) { el.innerHTML = ''; lastSubsKey = ''; return; }
+  const key = chunk[0].s; if (key !== lastSubsKey) { el.innerHTML = chunk.map(w => `<span>${w.w}</span>`).join(''); lastSubsKey = key; }
+  const pop = eBack(inv(chunk[0].s - .05, chunk[0].s + .12, t));
+  el.style.transform = `scale(${lerp(.75, 1, pop)})`; el.style.opacity = clamp(pop * 1.5);
+  [...el.children].forEach((sp, i) => { const w = chunk[i], on = t >= w.s && t < w.e + .02; sp.classList.toggle('on', on); sp.style.transform = on ? 'scale(1.06) rotate(-1.5deg)' : 'none'; });
+}
+
+function sceneAt(t) { let s = TL.scenes[0]; for (const x of TL.scenes) if (t >= x.start) s = x; return s; }
+
+window.renderAt = function (t) {
+  const s = sceneAt(t), lt = t - s.start, p = lt / s.dur, f = Math.round(t * TL.fps);
+  const isM = s.kind === 'mountain', m = isM ? s.m : TL.scenes[TL.scenes.length - 2].m;
+  const L = isM ? LOOK[m.rank] : (s.kind === 'intro' ? { ...LOOK[1], pal: 'dawn', a0: 2.0 } : { ...LOOK[1], pal: 'dusk', a0: 2.9 });
+  if (curKey !== s.key) { buildTerrain(m.rank, L); applyPal(L.pal, L.a0 + 1.15); curKey = s.key; }
+
+  /* kamera: zirve etrafında drone yörüngesi */
+  const P = peakY, D = L.dist * 1.45;
+  let ang, rad, cy, ty;
+  if (s.kind === 'intro') {
+    ang = L.a0 + p * .15; rad = lerp(1550, 1350, p); cy = P + lerp(380, 260, p); ty = P - 130;
+  } else if (s.kind === 'outro') {
+    ang = L.a0 + p * .15; rad = lerp(1500, 1700, p); cy = P + 420; ty = P - 80;
+  } else {
+    // belgesel: yavaş drone yörüngesi + hafif ileri itiş
+    ang = L.a0 - .12 + p * .24;
+    rad = lerp(D * 1.12, D * .94, p);
+    cy = P + lerp(D * .27, D * .21, p);
+    ty = P - rad * .08;
+  }
+  let cx = Math.cos(ang) * rad, cz = Math.sin(ang) * rad;
+  cy = Math.max(cy, groundAt(cx, cz) + 35);
+  camera.position.set(cx, cy, cz);
+  camera.lookAt(0, ty, 0);
+  if (isM) camera.rotateZ(Math.sin(lt * .8) * .006);
+  sun.target.position.set(0, P * .6, 0);
+
+  /* bulutlar */
+  const cr = rng(m.rank * 97 + (isM ? 0 : 5));
+  clouds.forEach(c => {
+    let a = cr() * Math.PI * 2 + t * .008, rr = 1400 + cr() * 2600; const hy = P * (.72 + cr() * .22), sc = 700 + cr() * 900;
+    if (Math.abs(Math.atan2(Math.sin(a - ang), Math.cos(a - ang))) < 1.1) rr += 2500;
+    c.position.set(Math.cos(a) * rr, hy, Math.sin(a) * rr); c.scale.set(sc * 1.8, sc * .7, 1);
+    c.material.opacity = (s.kind === 'intro' ? .25 : .5) * (.4 + cr() * .6);
+    c.material.color.set(L.pal === 'night' || L.pal === 'dusk' ? '#a49ab8' : L.pal === 'sunset' ? '#ffd6bf' : '#ffffff');
+  });
+  snow.visible = !!L.snowfall && isM;
+  if (snow.visible) {
+    const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+    for (let i = 0; i < SNOWN; i++) {
+      const [a, b, c, d] = snowSeed[i], fall = (d + t * (.12 + a * .08)) % 1, dist = 20 + b * 260;
+      const sx = (a - .5) * dist * 1.1, sy = (1 - fall) * 2 - 1;
+      snowP[i * 3] = cx + fwd.x * dist + (-fwd.z) * sx + Math.sin(t * 1.3 + i) * 2;
+      snowP[i * 3 + 1] = cy + sy * dist * .9;
+      snowP[i * 3 + 2] = cz + fwd.z * dist + fwd.x * sx;
+    }
+    snowG.attributes.position.needsUpdate = true;
+  }
+  renderer.render(scene, camera);
+
+  /* geçiş: siyaha karartma + renk derecelendirme */
+  const first = s === TL.scenes[0], last = s.kind === 'outro';
+  const fin = first ? 1 - smooth(0, 1.2, lt) : 1 - smooth(0, .55, lt);
+  const fout = last ? smooth(s.dur - 1.0, s.dur, lt) : smooth(s.dur - .45, s.dur, lt);
+  $('black').style.opacity = Math.max(fin, fout);
+  $('gl').style.filter = 'contrast(1.06) saturate(.9) brightness(.97)';
+  grain(f);
+
+  show($('intro'), s.kind === 'intro'); show($('lt'), isM); show($('outro'), last); show($('credits'), last);
+  $('series').style.opacity = isM ? smooth(.4, 1.2, lt) * (1 - smooth(s.dur - .6, s.dur - .2, lt)) : 0;
+  if (isM) $('sern').textContent = m.rank;
+
+  if (s.kind === 'intro') {
+    [['ik', .6], ['it1', 1.2], ['it2', 1.7], ['iln', 2.3]].forEach(([id, st]) => {
+      const k = eOut(inv(st, st + 1.1, lt)), o = 1 - smooth(s.dur - 1.0, s.dur - .3, lt);
+      $(id).style.opacity = k * o; $(id).style.transform = id === 'iln' ? `scaleX(${k})` : `translateY(${lerp(24, 0, k)}px)`;
+      if (id !== 'iln') $(id).style.letterSpacing = '';
+    });
+  }
+  if (isM) {
+    const g = s.geo || {};
+    $('rank').textContent = m.rank; $('name').textContent = m.name; $('sub').textContent = `${m.sub} · ${m.city}`;
+    $('coord').textContent = g.lat ? `${dms(g.lat, 'K', 'G')} · ${dms(g.lon, 'D', 'B')}` : '';
+    const out = 1 - smooth(s.dur - .9, s.dur - .35, lt);
+    const k1 = eOut(inv(.7, 1.6, lt)), k2 = eOut(inv(1.0, 1.9, lt)), k3 = eInOut(inv(1.2, 2.2, lt)), k4 = eOut(inv(1.7, 2.6, lt));
+    $('rank').style.opacity = k1 * out; $('rank').style.transform = `translateY(${lerp(20, 0, k1)}px)`;
+    $('vline').style.transform = `scaleY(${k1})`; $('vline').style.opacity = out;
+    $('name').style.opacity = k2 * out; $('name').style.transform = `translateX(${lerp(-30, 0, k2)}px)`;
+    $('sub').style.opacity = k2 * out * .95;
+    $('hline').style.transform = `scaleX(${k3})`; $('hline').style.opacity = out;
+    $('meta').style.opacity = k4 * out; $('meta').style.transform = `translateY(${lerp(14, 0, k4)}px)`;
+    $('height').firstChild.textContent = fmt(m.h);
+  }
+  if (last) {
+    $('outro').querySelector('h2').style.opacity = eOut(inv(.4, 1.4, lt));
+    barRows.forEach((b, i) => {
+      const st = .7 + (9 - i) * .14, k = eInOut(inv(st, st + 1.2, lt));
+      b.fill.style.width = (b.m.h / AGRI * 100 * k) + '%'; b.el.style.opacity = clamp(inv(st, st + .5, lt));
+    });
+    $('credits').style.opacity = eOut(inv(2.6, 3.6, lt));
+  }
+  // altyazı
+  let chunk = null; for (const c of s.chunks) if (t >= c[0].s - .1 && t < c[c.length - 1].e + .35) chunk = c;
+  const sb = $('subs');
+  if (!chunk) sb.style.opacity = 0;
+  else { sb.textContent = chunk.map(w => w.w).join(' '); sb.style.opacity = clamp(inv(chunk[0].s - .1, chunk[0].s + .15, t)) * (1 - clamp(inv(chunk[chunk.length - 1].e + .15, chunk[chunk.length - 1].e + .35, t))); }
+};
+
+window.TL = TL;
+await document.fonts.ready;
+await Promise.all(['IL', 'IR', 'IM', 'ISB'].map(f => document.fonts.load(`40px ${f}`)));
+window.renderAt(0);
+window.READY = true;
+</script>
+</body>
+</html>

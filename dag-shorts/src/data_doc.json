@@ -1,0 +1,112 @@
+{
+ "intro": {
+  "text": "Volkanlardan kireçtaşı zirvelere... Türkiye'nin en yüksek 10 dağı.",
+  "tts": "Volkanlardan, kireçtaşı zirvelere. Türkiye'nin en yüksek on dağı."
+ },
+ "mountains": [
+  {
+   "rank": 10,
+   "name": "Medetsiz",
+   "sub": "Bolkar Dağları",
+   "h": 3524,
+   "city": "Niğde",
+   "fact": "Toroslar'ın gizli devi",
+   "text": "Bolkar Dağları'nın zirvesi, Medetsiz. 3.524 metre. Eteklerinde buzul gölleri uzanır.",
+   "tts": "Bolkar Dağları'nın zirvesi, Medetsiz. Üç bin beş yüz yirmi dört metre. Eteklerinde buzul gölleri uzanır."
+  },
+  {
+   "rank": 9,
+   "name": "Esence Dağı",
+   "sub": "Keşiş Dağı",
+   "h": 3549,
+   "city": "Erzincan",
+   "fact": "Fırat'ın kaynağına bakar",
+   "text": "Erzincan'ın Esence Dağı, diğer adıyla Keşiş. 3.549 metre. Eteğinden Fırat'ın kolu Karasu akar.",
+   "tts": "Erzincan'ın Esence Dağı, diğer adıyla Keşiş. Üç bin beş yüz kırk dokuz metre. Eteğinden Fırat'ın kolu Karasu akar."
+  },
+  {
+   "rank": 8,
+   "name": "Tendürek",
+   "sub": "Volkanik Dağ",
+   "h": 3584,
+   "city": "Ağrı – Van",
+   "fact": "Hâlâ buhar çıkaran uyuyan volkan",
+   "text": "Kalkan volkanı Tendürek. 3.584 metre. Kraterinden hâlâ buhar yükselir.",
+   "tts": "Kalkan volkanı Tendürek. Üç bin beş yüz seksen dört metre. Kraterinden hâlâ buhar yükselir."
+  },
+  {
+   "rank": 7,
+   "name": "Kızılkaya",
+   "sub": "Aladağlar",
+   "h": 3767,
+   "city": "Niğde – Adana",
+   "fact": "Dağcıların cenneti",
+   "text": "Aladağlar'ın zirvesi, Kızılkaya. 3.767 metre. Sarp kireçtaşı duvarlarıyla dağcıların gözdesi.",
+   "tts": "Aladağlar'ın zirvesi, Kızılkaya. Üç bin yedi yüz altmış yedi metre. Sarp kireçtaşı duvarlarıyla dağcıların gözdesi."
+  },
+  {
+   "rank": 6,
+   "name": "Küçük Ağrı",
+   "sub": "Volkanik Dağ",
+   "h": 3896,
+   "city": "Iğdır",
+   "fact": "Büyük kardeşinin hemen yanında",
+   "text": "Küçük Ağrı. 3.896 metre. Büyük Ağrı'dan Serdarbulak yaylasıyla ayrılır.",
+   "tts": "Küçük Ağrı. Üç bin sekiz yüz doksan altı metre. Büyük Ağrı'dan Serdarbulak yaylasıyla ayrılır."
+  },
+  {
+   "rank": 5,
+   "name": "Erciyes",
+   "sub": "Sönmüş Volkan",
+   "h": 3917,
+   "city": "Kayseri",
+   "fact": "Türkiye'nin kayak devi",
+   "text": "Kayseri'nin simgesi, Erciyes. 3.917 metre. Orta Anadolu'nun en yüksek volkanı.",
+   "tts": "Kayseri'nin simgesi, Erciyes. Üç bin dokuz yüz on yedi metre. Orta Anadolu'nun en yüksek volkanı."
+  },
+  {
+   "rank": 4,
+   "name": "Kaçkar",
+   "sub": "Kaçkar Dağları",
+   "h": 3937,
+   "city": "Rize",
+   "fact": "Karadeniz'in çatısı",
+   "text": "Karadeniz'in zirvesi, Kaçkar. 3.937 metre. Granit yamaçlarında küçük buzullar hâlâ yaşıyor.",
+   "tts": "Karadeniz'in zirvesi, Kaçkar. Üç bin dokuz yüz otuz yedi metre. Granit yamaçlarında küçük buzullar hâlâ yaşıyor."
+  },
+  {
+   "rank": 3,
+   "name": "Süphan",
+   "sub": "Volkanik Dağ",
+   "h": 4058,
+   "city": "Bitlis",
+   "fact": "Van Gölü'ne yukarıdan bakar",
+   "text": "Van Gölü'nün kuzeyinde, Süphan. 4.058 metre. Zirvesinde küçük bir krater gölü saklanır.",
+   "tts": "Van Gölü'nün kuzeyinde, Süphan. Dört bin elli sekiz metre. Zirvesinde küçük bir krater gölü saklanır."
+  },
+  {
+   "rank": 2,
+   "name": "Uludoruk",
+   "sub": "Cilo Dağları",
+   "h": 4135,
+   "city": "Hakkari",
+   "fact": "Türkiye'nin en büyük buzulları",
+   "text": "Cilo Dağları'nın zirvesi, Uludoruk. 4.135 metre. Türkiye'nin en büyük buzulları burada.",
+   "tts": "Cilo Dağları'nın zirvesi, Uludoruk. Dört bin yüz otuz beş metre. Türkiye'nin en büyük buzulları burada."
+  },
+  {
+   "rank": 1,
+   "name": "Ağrı Dağı",
+   "sub": "Türkiye'nin Çatısı",
+   "h": 5137,
+   "city": "Ağrı – Iğdır",
+   "fact": "Nuh'un Gemisi efsanesi",
+   "text": "Ve zirvede, Ağrı Dağı. 5.137 metre. Türkiye'nin çatısı, yıl boyu buzullarla örtülü.",
+   "tts": "Ve zirvede, Ağrı Dağı. Beş bin yüz otuz yedi metre. Türkiye'nin çatısı, yıl boyu buzullarla örtülü."
+  }
+ ],
+ "outro": {
+  "text": "Hepsi, Anadolu'yu şekillendiren levha hareketlerinin ve volkanizmanın eseri.",
+  "tts": "Hepsi, Anadolu'yu şekillendiren levha hareketlerinin ve volkanizmanın eseri."
+ }
+}

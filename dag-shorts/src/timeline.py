@@ -1,8 +1,10 @@
 """Seslendirme sürelerinden sahne zaman çizelgesi + kelime bazlı altyazı zamanlaması üretir."""
-import json, re, sys
-D = json.load(open('src/data.json')); V = {v['key']: v for v in json.load(open('build/voice/voice.json'))}
-LEAD, TAIL = 0.22, 0.20
+import json, re, sys, os
+E = os.environ.get
+D = json.load(open(E('DATA', 'src/data.json'))); V = {v['key']: v for v in json.load(open(E('VOICE', 'build/voice') + '/voice.json'))}
+LEAD, TAIL = float(E('LEAD', '0.22')), float(E('TAIL', '0.20'))
 scenes, t = [], 0.0
+GEO = json.load(open('build/terrain/meta.json'))
 
 def words(text, vstart, vdur):
     toks = text.split()
@@ -24,9 +26,9 @@ def add(kind, key, extra, data):
                    'voice': round(t + LEAD, 3), 'words': words(v['text'], t + LEAD, v['dur']), **data})
     t += dur
 
-add("intro", "intro", 0.3, {})
+add("intro", "intro", float(E("INTRO_X", "0.3")), {})
 for m in D['mountains']:
-    add('mountain', f"m{m['rank']:02d}", 0.5 if m['rank'] == 1 else 0.0, {'m': m})
-add('outro', 'outro', 2.4, {"all": D['mountains']})
-json.dump({'fps': 30, 'total': round(t, 3), 'scenes': scenes}, open('build/timeline.json', 'w'), ensure_ascii=False, indent=1)
+    add('mountain', f"m{m['rank']:02d}", 0.5 if m['rank'] == 1 else 0.0, {'m': m, 'geo': GEO.get(str(m['rank']))})
+add('outro', 'outro', float(E('OUTRO_X', '2.4')), {"all": D['mountains']})
+json.dump({'fps': 30, 'total': round(t, 3), 'scenes': scenes}, open(E('OUT', 'build/timeline.json'), 'w'), ensure_ascii=False, indent=1)
 print('toplam süre', round(t, 2))

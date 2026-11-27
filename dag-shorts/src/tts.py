@@ -8,7 +8,7 @@ for key, s in segs:
     if not os.path.exists(raw): gTTS(s["tts"], lang="tr").save(raw)
     # biraz hızlandır, sessizlikleri kırp, normalize et
     subprocess.run(["ffmpeg","-y","-v","error","-i",raw,"-af",
-      "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,atempo=1.25,highpass=f=80,acompressor=threshold=-18dB:ratio=3,loudnorm=I=-16",
+      "silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,atempo=" + __import__("os").environ.get("TEMPO","1.25") + ",highpass=f=80,acompressor=threshold=-18dB:ratio=3,loudnorm=I=-16",
       "-ar","44100","-ac","1",wav], check=True)
     d = float(subprocess.check_output(["ffprobe","-v","error","-show_entries","format=duration","-of","csv=p=0",wav]))
     meta.append({"key":key,"dur":round(d,3),"text":s["text"]}); print(key, round(d,2))

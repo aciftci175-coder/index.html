@@ -12,7 +12,7 @@ const [mode, a, b, out] = process.argv.slice(2);
   const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('console', m => console.log('[page]', m.text())); page.on('pageerror', e => console.log('[err]', e.message));
-  await page.goto(`http://localhost:${srv.address().port}/src/render.html`);
+  await page.goto(`http://localhost:${srv.address().port}/src/render.html?${process.env.Q || ''}`);
   await page.waitForFunction('window.READY === true', null, { timeout: 120000 });
   const fps = await page.evaluate('TL.fps'), total = await page.evaluate('TL.total');
   if (mode === 'stills') {
